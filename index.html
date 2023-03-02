@@ -43,9 +43,6 @@
       .button:hover {
         filter: brightness(0.9);
       }
-      .button:focus {
-        filter: brightness(0.9);
-      }
       .button:active {
         filter: brightness(0.8);
       }
@@ -57,9 +54,6 @@
           border-color: hsla(0, 0%, 100%, 0.1);
         }
         .button:hover {
-          filter: brightness(1.1);
-        }
-        .button:focus {
           filter: brightness(1.1);
         }
         .button:active {
@@ -92,6 +86,64 @@
   </head>
   <body>
     <nav id="menubar">
+      <button id="copy-button" class="button" title="复制 Markdown">
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          stroke-width="0"
+          viewBox="0 0 512 512"
+          height="1em"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+          class="IoCopyOutline"
+        >
+          <rect
+            width="336"
+            height="336"
+            x="128"
+            y="128"
+            fill="none"
+            stroke-linejoin="round"
+            stroke-width="32"
+            rx="57"
+            ry="57"
+          ></rect>
+          <path
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="32"
+            d="M383.5 128l.5-24a56.16 56.16 0 00-56-56H112a64.19 64.19 0 00-64 64v216a56.16 56.16 0 0056 56h24"
+          ></path>
+        </svg>
+      </button>
+      <button id="save-button" class="button" title="导出 Markdown">
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          stroke-width="0"
+          viewBox="0 0 16 16"
+          height="1em"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+          class="BsMarkdown"
+        >
+          <path
+            d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"
+          ></path>
+          <path
+            fill-rule="evenodd"
+            d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"
+          ></path>
+          <path
+            fill-rule="evenodd"
+            d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"
+          ></path>
+          <path
+            d="M3.56 11V7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06z"
+          ></path>
+        </svg>
+      </button>
       <button id="reload-button" class="button" title="刷新">
         <svg
           stroke="currentColor"
@@ -147,6 +199,7 @@
       src="https://chat.openai.com/chat"
       frameborder="0"
       allowpopups
+      nodeintegration
     ></webview>
   </body>
 </html>

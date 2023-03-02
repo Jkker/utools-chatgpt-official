@@ -1,5 +1,7 @@
 (() => {
-  const getTextarea = () => document.querySelector('textarea[data-id="root"]');
+  const CHATGPT_URL = 'https://chat.openai.com/chat';
+
+  const getTextarea = () => document.querySelector('textarea');
   const ICON = {
     copy: `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H10c-1.103 0-2 .897-2 2v4H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2v-4h4c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM4 20V10h10l.002 10H4zm16-6h-4v-4c0-1.103-.897-2-2-2h-4V4h10v10z"></path></svg>`,
     paste: `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20 11V5c0-1.103-.897-2-2-2h-3a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1H4c-1.103 0-2 .897-2 2v13c0 1.103.897 2 2 2h7c0 1.103.897 2 2 2h7c1.103 0 2-.897 2-2v-7c0-1.103-.897-2-2-2zm-9 2v5H4V5h3v2h8V5h3v6h-5c-1.103 0-2 .897-2 2zm2 7v-7h7l.001 7H13z"></path></svg>`,
@@ -11,6 +13,82 @@
     style.innerHTML = css.trim();
     document.head.appendChild(style);
   };
+  const converter = new window.showdown.Converter();
+
+  const htmlProseToMarkdown = (prose) =>
+    Array.from(prose.children, (e) => {
+      if (e.tagName.toLowerCase() === 'pre') {
+        return `\`\`\`${
+          e.querySelector('code').className.match(/language-(.*)/)[1] ?? ''
+        }\n${e.querySelector('code').textContent.trim()}\n\`\`\``;
+      }
+      return converter.makeMarkdown(e.outerHTML).trim();
+    }).join('\n\n');
+
+  const chat2markdown = () => {
+    const chat = document.querySelectorAll('.text-base');
+    let md = '';
+    for (const e of chat) {
+      const prose = e.querySelector('.prose');
+      const img = e.querySelectorAll('img');
+      md += md == '' ? '' : '\n\n--------\n\n';
+      if (prose) {
+        md += `**ChatGPT**:\n\n`;
+        md += htmlProseToMarkdown(prose);
+      } else if (img.length > 0) {
+        md += `**${img[1]?.alt || 'User'}**:\n\n`;
+        md += e.textContent.trim();
+      }
+    }
+    return md;
+  };
+  const lookForClass = (elem, cls, checkParent = true) => {
+    // check elem
+    if (
+      elem.classList &&
+      (elem.className === cls || elem.classList.contains(cls))
+    )
+      return elem;
+
+    // check children
+    const children = elem.querySelectorAll(`[class~="${cls}"]`);
+    if (children.length === 1) return children[0];
+
+    // check parents
+    if (!checkParent) return null;
+
+    while (elem.parentNode) {
+      elem = elem.parentNode;
+      if (
+        elem.classList &&
+        (elem.className === cls || elem.classList.contains(cls))
+      ) {
+        return elem;
+      }
+    }
+    return null;
+  };
+
+  window.saveChatAsMarkdown = () => {
+    const md = chat2markdown();
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const currTab = document.querySelector(
+      'nav > div > div a[class="flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all pr-14 bg-gray-800 hover:bg-gray-800 group"]'
+    );
+    a.download = (currTab?.innerText || 'Conversation with ChatGPT') + '.md';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  window.copyChatAsMarkdown = () => {
+    const md = chat2markdown();
+    window.focus();
+    navigator.clipboard.writeText(md);
+  };
+
   const createContextMenu = () => {
     const contextMenu = document.createElement('div');
     const item = (label, action, icon) => {
@@ -80,12 +158,37 @@
     const show = (event) => {
       contextMenu.innerHTML = '';
       const selection = window.getSelection().toString();
+      const prose = lookForClass(event.target, 'prose');
 
       if (selection) {
         contextMenu.appendChild(
           item(
             'Copy',
             () => navigator.clipboard.writeText(selection.trim()),
+            ICON.copy
+          )
+        );
+      } else if (
+        lookForClass(
+          event.target,
+          'min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap',
+          false
+        )
+      ) {
+        // user message
+        contextMenu.appendChild(
+          item(
+            'Copy',
+            () => navigator.clipboard.writeText(event.target.innerText.trim()),
+            ICON.copy
+          )
+        );
+      } else if (prose) {
+        // chatgpt message
+        contextMenu.appendChild(
+          item(
+            'Copy',
+            () => navigator.clipboard.writeText(htmlProseToMarkdown(prose)),
             ICON.copy
           )
         );
@@ -163,17 +266,18 @@
     document.body.appendChild(contextMenu);
   };
 
-  const init = () => {
-    console.log('focused', document.hasFocus(), document.activeElement.tagName);
-    if (window.pluginInitialized) return;
+  const reload = () => {
+    if (window.location.href.startsWith(CHATGPT_URL)) window.location.reload();
+    else window.location.href = CHATGPT_URL;
+  };
 
-    console.log('contentScript.js');
+  const init = () => {
+    if (window.pluginInitialized) return;
+    window.pluginInitialized = true;
 
     const textarea = getTextarea();
-    textarea.focus();
 
-    console.log('focused', document.hasFocus(), document.activeElement.tagName);
-
+    // input function
     window.writeInput = (text) => {
       const textarea = getTextarea();
       textarea.value = decodeURIComponent(text);
@@ -182,9 +286,10 @@
       return true;
     };
 
-    document.querySelector('form div').addEventListener('click', function () {
-      getTextarea().focus();
-    });
+    // focus textarea on click
+    document
+      .querySelector('form div')
+      .addEventListener('click', () => getTextarea().focus());
     // custom styles
     insertCSS(`
 body code, body pre {
@@ -199,34 +304,129 @@ form > div div:last-child:focus-within {
   box-shadow: 0 0 0 2px #3b82f6 !important;
 }
 
-/* Remove Updates & FAQ */
-a[href="https://help.openai.com/en/collections/3742473-chatgpt"] {
+/* Hide Upgrade, FAQ */
+nav > a:nth-child(6), nav > a:nth-child(4) {
   display: none;
 }
   `);
 
-    window.pluginInitialized = true;
-
-    document.addEventListener('keydown', (event) => {
+    function keydownHandler(event) {
+      const { key, ctrlKey, shiftKey } = event;
       const textarea = getTextarea();
+
+      // console.log(`🚀keydown`, {
+      //   key,
+      //   ctrl: ctrlKey,
+      //   alt: altKey,
+      //   shift: shiftKey,
+      //   textarea,
+      // });
+
       if (!textarea) return;
       const blurred = !textarea.matches(':focus');
-      if (event.key === 'Escape' && !blurred) {
-        event.preventDefault();
-        textarea.blur();
-      }
-      if (event.key.match(/^[a-z0-9]+$/i) && blurred) {
-        textarea.focus();
-        // add key to textarea
-        const selectionStart = textarea.selectionStart;
-        const selectionEnd = textarea.selectionEnd;
-        // textarea.setRangeText(event.key, selectionStart, selectionEnd, 'end');
+
+      if (key === 'F5') {
+        reload();
         return;
       }
-      if (event.key === 'Enter' && blurred) {
-        textarea.focus();
+
+      // keyboard shortcuts
+      if (ctrlKey) {
+        const tabList = document.querySelector('nav > div > div');
+        const currTab = tabList.querySelector(
+          'a[class="flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all pr-14 bg-gray-800 hover:bg-gray-800 group"]'
+        );
+        switch (key.toLowerCase()) {
+          // New chat
+          case 'n': {
+            event.preventDefault();
+            document.querySelector('nav a').click();
+            return;
+          }
+          // focus textarea
+          case '/': {
+            event.preventDefault();
+            textarea.focus();
+            return;
+          }
+          // refresh
+          case 'r': {
+            event.preventDefault();
+            reload();
+            return;
+          }
+
+          // // delete chat
+          // case 'd': {
+          //   event.preventDefault();
+          //   currTab.querySelectorAll('button')?.[1]?.click();
+          //   return;
+          // }
+
+          // pin to top
+          case 't': {
+            event.preventDefault();
+            console.info('TOGGLE_PIN');
+            return;
+          }
+
+          // save chat
+          case 's': {
+            event.preventDefault();
+            window.saveChatAsMarkdown();
+            return;
+          }
+
+          // copy chat
+          case 'c': {
+            if (shiftKey) {
+              event.preventDefault();
+              window.copyChatAsMarkdown();
+            }
+            return;
+          }
+
+          // switch tabs
+          case 'tab': {
+            event.preventDefault();
+
+            const tabs = tabList.querySelectorAll('a');
+
+            if (tabs.length <= 1) return;
+
+            const nextTab = currTab?.nextElementSibling ?? tabs[0];
+            const prevTab =
+              currTab?.previousElementSibling ?? tabs[tabs.length - 1];
+
+            // Ctrl + Shift + Tab -> Previous Tab
+            if (shiftKey) prevTab.click();
+            // Ctrl + Tab -> Next Tab
+            else nextTab.click();
+            return;
+          }
+        }
       }
-    });
+
+      // focus textarea on keypress if blurred
+      if (blurred) {
+        if (key.match(/^[a-z0-9]$/i)) {
+          textarea.focus();
+        } else if (key === 'Enter') {
+          event.preventDefault();
+          textarea.focus();
+        }
+      } else {
+        // blur textarea on escape
+        if (key === 'Escape') {
+          event.preventDefault();
+          textarea.blur();
+        }
+      }
+    }
+    // Keyboard shortcuts
+    document.addEventListener('keydown', keydownHandler);
+
+    textarea.focus();
   };
   let observer;
 
@@ -244,6 +444,7 @@ a[href="https://help.openai.com/en/collections/3742473-chatgpt"] {
       }
     }).observe(document.querySelector('div[id="__next"]') ?? document, {
       childList: true,
+      subtree: true,
     });
   }
 })();

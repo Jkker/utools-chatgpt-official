@@ -1,9 +1,15 @@
+const CHATGPT_URL = 'https://chat.openai.com/chat';
 const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
 
 const contentScript = fs.readFileSync(
   path.join(__dirname, 'contentScript.js'),
+  'utf8'
+);
+
+const showdown = fs.readFileSync(
+  path.join(__dirname, 'showdown.min.js'),
   'utf8'
 );
 
@@ -18,11 +24,24 @@ ipcRenderer.on('init', (event, id) => {
   console.log('init', { parentId });
 });
 
-const send = (event, ...arg) => {
-  if (!parentId) return;
-  ipcRenderer.sendTo(parentId, event, ...arg);
-  console.log('⬆️ send', event, ...arg);
+let pinned = false;
+const togglePin = () => {
+  // console.log('pin-button click');
+  const pinButton = document.getElementById('pin-button');
+  pinButton.classList.toggle('pinned');
+  ipcRenderer.sendTo(parentId, pinned ? 'unpin' : 'pin');
+  pinned = !pinned;
+  pinButton.title = pinned ? '取消置顶' : '置顶';
 };
+
+const reload = () => {
+  if (webview.getURL().startsWith(CHATGPT_URL)) {
+    webview.reload();
+  } else {
+    webview.loadURL(CHATGPT_URL);
+  }
+};
+
 const main = () => {
   webview = document.querySelector('webview');
 
@@ -53,54 +72,50 @@ const main = () => {
 
   const onload = async () => {
     const url = webview.getURL();
-    console.log(`🚀 ~ file: preload.js:56 ~ onload ~ url:`, url);
 
-    if (url !== 'https://chat.openai.com/chat') return;
+    if (!url.startsWith(CHATGPT_URL)) return;
 
     // webview.openDevTools({ mode: 'detach' });
-    // console.log('CHATGPT dom-ready', { messageQueue });
     loaded = true;
 
+    await webview.executeJavaScript(showdown, true);
     await webview.executeJavaScript(contentScript, true);
-    // await webview.executeJavaScript(toolboxScript, true);
 
     if (messageQueue.length > 0) {
       input(messageQueue.shift());
     }
   };
 
-  // webview.addEventListener('dom-ready', onload);
   webview.addEventListener('did-navigate', onload);
 
-  webview.addEventListener('ipc-message', (event) => {
-    // console.log('CHATGPT ipc-message', event);
+  webview.addEventListener('console-message', (event) => {
+    // console.log('CHATGPT console-message', event);
+    const { level, message } = event;
+    if (message === 'TOGGLE_PIN') {
+      togglePin();
+    }
   });
 };
-let pinned = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('WINDOW DOMContentLoaded');
-  const pinButton = document.getElementById('pin-button');
-  pinButton.addEventListener('click', () => {
-    // console.log('pin-button click');
-    pinButton.classList.toggle('pinned');
-    ipcRenderer.sendTo(parentId, pinned ? 'unpin' : 'pin');
-    pinned = !pinned;
-    pinButton.title = pinned ? '取消置顶' : '置顶';
+
+  document
+    .getElementById('pin-button')
+    .addEventListener('click', () => togglePin());
+  document
+    .getElementById('reload-button')
+    .addEventListener('click', () => reload());
+
+  document.getElementById('copy-button').addEventListener('click', () => {
+    webview.focus();
+    webview.executeJavaScript('window.copyChatAsMarkdown()');
+    utools.showNotification('已复制对话为 Markdown');
   });
 
-  const reloadButton = document.getElementById('reload-button');
-  reloadButton.addEventListener('click', () => {
-    // console.log('reload-button click');
-    if (webview.getURL() === 'https://chat.openai.com/chat') {
-      webview.reload();
-    } else {
-      webview.loadURL('https://chat.openai.com/chat');
-    }
+  document.getElementById('save-button').addEventListener('click', () => {
+    webview.executeJavaScript('window.saveChatAsMarkdown()');
   });
 
-  // webview.focus();
   main();
 });
-
-// const init = () => {};
