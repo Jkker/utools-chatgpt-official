@@ -303,9 +303,7 @@ form > div div:last-child:focus-within {
 form > div div:last-child:focus-within {
   box-shadow: 0 0 0 2px #3b82f6 !important;
 }
-
-/* Hide Upgrade, FAQ */
-nav > a:nth-child(6), nav > a:nth-child(4) {
+[class="rounded-md bg-yellow-200 py-0.5 px-1.5 text-xs font-medium uppercase text-gray-800"] {
   display: none;
 }
   `);
@@ -378,7 +376,7 @@ nav > a:nth-child(6), nav > a:nth-child(4) {
           }
 
           // copy chat
-          case 'c': {
+          case 'm': {
             if (shiftKey) {
               event.preventDefault();
               window.copyChatAsMarkdown();

@@ -9,7 +9,12 @@ const contentScript = fs.readFileSync(
 );
 
 const showdown = fs.readFileSync(
-  path.join(__dirname, 'showdown.min.js'),
+  path.join(__dirname, 'pkgs', 'showdown.min.js'),
+  'utf8'
+);
+
+const latexRender = fs.readFileSync(
+  path.join(__dirname, 'pkgs', 'chatgpt-latex-render.js'),
   'utf8'
 );
 
@@ -75,10 +80,12 @@ const main = () => {
 
     if (!url.startsWith(CHATGPT_URL)) return;
 
-    // webview.openDevTools({ mode: 'detach' });
+    webview.openDevTools({ mode: 'detach' });
     loaded = true;
 
     await webview.executeJavaScript(showdown, true);
+    await webview.executeJavaScript(latexRender, true);
+    // await webview.executeJavaScript(mathjax, true);
     await webview.executeJavaScript(contentScript, true);
 
     if (messageQueue.length > 0) {
