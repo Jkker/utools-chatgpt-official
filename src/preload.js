@@ -77,10 +77,11 @@ const main = () => {
 
   const onload = async () => {
     const url = webview.getURL();
+    webview.focus();
 
     if (!url.startsWith(CHATGPT_URL)) return;
 
-    webview.openDevTools({ mode: 'detach' });
+    // webview.openDevTools({ mode: 'detach' });
     loaded = true;
 
     await webview.executeJavaScript(showdown, true);
@@ -98,6 +99,20 @@ const main = () => {
   webview.addEventListener('console-message', (event) => {
     // console.log('CHATGPT console-message', event);
     const { level, message } = event;
+
+    switch (message) {
+      case 'TOGGLE_PIN':
+        togglePin();
+        break;
+      case 'ZOOM_IN':
+        webview.setZoomLevel(webview.getZoomLevel() + 1);
+        break;
+      case 'ZOOM_OUT':
+        webview.setZoomLevel(webview.getZoomLevel() - 1);
+        break;
+      case 'ZOOM_RESET':
+        webview.setZoomLevel(0);
+    }
     if (message === 'TOGGLE_PIN') {
       togglePin();
     }

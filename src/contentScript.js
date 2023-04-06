@@ -23,7 +23,9 @@
         }\n${e.querySelector('code').textContent.trim()}\n\`\`\``;
       }
       return converter.makeMarkdown(e.outerHTML).trim();
-    }).join('\n\n');
+    })
+      .join('\n\n')
+      .replaceAll('\n<!-- -->', '');
 
   const chat2markdown = () => {
     const chat = document.querySelectorAll('.text-base');
@@ -384,6 +386,22 @@ form > div div:last-child:focus-within {
             return;
           }
 
+          case '-': {
+            event.preventDefault();
+            console.info('ZOOM_OUT');
+            return;
+          }
+          case '=': {
+            event.preventDefault();
+            console.info('ZOOM_IN');
+            return;
+          }
+          case '0': {
+            event.preventDefault();
+            console.info('ZOOM_RESET');
+            return;
+          }
+
           // switch tabs
           case 'tab': {
             event.preventDefault();
@@ -406,7 +424,7 @@ form > div div:last-child:focus-within {
       }
 
       // focus textarea on keypress if blurred
-      if (blurred) {
+      else if (blurred) {
         if (key.match(/^[a-z0-9]$/i)) {
           textarea.focus();
         } else if (key === 'Enter') {
@@ -424,7 +442,7 @@ form > div div:last-child:focus-within {
     // Keyboard shortcuts
     document.addEventListener('keydown', keydownHandler);
 
-    textarea.focus();
+    getTextarea().focus();
   };
   let observer;
 
