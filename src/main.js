@@ -21,7 +21,7 @@ const createWindow = () => {
   }
 
   win = utools.createBrowserWindow(
-    './index.html',
+    './src/index.html',
     {
       // @ts-ignore
       title: 'ChatGPT',

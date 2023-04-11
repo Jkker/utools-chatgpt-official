@@ -8,14 +8,8 @@ const contentScript = fs.readFileSync(
   'utf8'
 );
 
-const showdown = fs.readFileSync(
-  path.join(__dirname, 'pkgs', 'showdown.min.js'),
-  'utf8'
-);
-
-const latexRender = fs.readFileSync(
-  path.join(__dirname, 'pkgs', 'chatgpt-latex-render.js'),
-  'utf8'
+const libraries = ['showdown.min.js', 'chatgpt-latex-render.js'].map((lib) =>
+  fs.readFileSync(path.join(__dirname, '..', 'lib', lib), 'utf8')
 );
 
 let loaded = false;
@@ -76,7 +70,9 @@ const main = () => {
   });
 
   const onload = async () => {
-    // webview.openDevTools({ mode: 'detach' });
+    if (utools.isDev()) {
+      webview.openDevTools({ mode: 'detach' });
+    }
     document.activeElement.blur();
     const url = webview.getURL();
 
@@ -84,8 +80,9 @@ const main = () => {
 
     loaded = true;
 
-    await webview.executeJavaScript(showdown);
-    await webview.executeJavaScript(latexRender);
+    // Load Libraries
+    await Promise.all(libraries.map((lib) => webview.executeJavaScript(lib)));
+    // Load Content Script
     await webview.executeJavaScript(contentScript);
 
     if (messageQueue.length > 0) {
