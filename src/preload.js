@@ -76,18 +76,17 @@ const main = () => {
   });
 
   const onload = async () => {
+    // webview.openDevTools({ mode: 'detach' });
+    document.activeElement.blur();
     const url = webview.getURL();
-    webview.focus();
 
     if (!url.startsWith(CHATGPT_URL)) return;
 
-    // webview.openDevTools({ mode: 'detach' });
     loaded = true;
 
-    await webview.executeJavaScript(showdown, true);
-    await webview.executeJavaScript(latexRender, true);
-    // await webview.executeJavaScript(mathjax, true);
-    await webview.executeJavaScript(contentScript, true);
+    await webview.executeJavaScript(showdown);
+    await webview.executeJavaScript(latexRender);
+    await webview.executeJavaScript(contentScript);
 
     if (messageQueue.length > 0) {
       input(messageQueue.shift());
@@ -130,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', () => reload());
 
   document.getElementById('copy-button').addEventListener('click', () => {
-    webview.focus();
     webview.executeJavaScript('window.copyChatAsMarkdown()');
     utools.showNotification('已复制对话为 Markdown');
   });
