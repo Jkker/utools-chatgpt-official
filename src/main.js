@@ -38,7 +38,7 @@ const createWindow = () => {
     () => {
       // win.focus();
       send('init');
-      // win.webContents.openDevTools();
+      if (utools.isDev()) win.webContents.openDevTools();
       if (type === 'over') send('input', payload);
     }
   );

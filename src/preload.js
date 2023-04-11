@@ -1,4 +1,9 @@
 const CHATGPT_URL = 'https://chat.openai.com/chat';
+const LIBRARIES = [
+  'chatgpt-heartbeat.js',
+  'showdown.min.js',
+  'chatgpt-latex-render.js',
+];
 const fs = require('fs');
 const path = require('path');
 const { ipcRenderer } = require('electron');
@@ -8,7 +13,7 @@ const contentScript = fs.readFileSync(
   'utf8'
 );
 
-const libraries = ['showdown.min.js', 'chatgpt-latex-render.js'].map((lib) =>
+const libraryScripts = LIBRARIES.map((lib) =>
   fs.readFileSync(path.join(__dirname, '..', 'lib', lib), 'utf8')
 );
 
@@ -81,7 +86,14 @@ const main = () => {
     loaded = true;
 
     // Load Libraries
-    await Promise.all(libraries.map((lib) => webview.executeJavaScript(lib)));
+    await Promise.all(
+      libraryScripts.map((lib, index) =>
+        webview.executeJavaScript(lib).catch((e) => {
+          utools.showNotification(`加载库 ${LIBRARIES[index]} 失败`);
+          console.log('Error loading library', LIBRARIES[index], e);
+        })
+      )
+    );
     // Load Content Script
     await webview.executeJavaScript(contentScript);
 
