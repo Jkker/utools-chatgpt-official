@@ -402,16 +402,23 @@ form > div div:last-child:focus-within {
 
             const tabs = tabList.querySelectorAll('a');
 
-            if (tabs.length <= 1) return;
-
-            const nextTab = currTab?.nextElementSibling ?? tabs[0];
-            const prevTab =
-              currTab?.previousElementSibling ?? tabs[tabs.length - 1];
+            if (tabs.length === 1) {
+              tabs[0].click();
+              return;
+            }
+            if (tabs.length < 1) return;
 
             // Ctrl + Shift + Tab -> Previous Tab
-            if (shiftKey) prevTab.click();
+            if (shiftKey) {
+              const prevTab =
+                currTab?.previousElementSibling ?? tabs[tabs.length - 1];
+              prevTab.click();
+            }
             // Ctrl + Tab -> Next Tab
-            else nextTab.click();
+            else {
+              const nextTab = currTab?.nextElementSibling ?? tabs[0];
+              nextTab.click();
+            }
             return;
           }
 
