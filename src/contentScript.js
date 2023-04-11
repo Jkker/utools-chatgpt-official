@@ -420,6 +420,9 @@ form > div div:last-child:focus-within {
             else nextTab.click();
             return;
           }
+
+          default:
+            break;
         }
       }
 
