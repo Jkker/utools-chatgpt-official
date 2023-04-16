@@ -1,4 +1,4 @@
-const CHATGPT_URL = 'https://chat.openai.com/chat';
+const CHATGPT_URL = 'https://chat.openai.com';
 const LIBRARIES = [
   'chatgpt-heartbeat.js',
   'showdown.min.js',
@@ -28,24 +28,6 @@ ipcRenderer.on('init', (event, id) => {
   console.log('init', { parentId });
 });
 
-let pinned = false;
-const togglePin = () => {
-  // console.log('pin-button click');
-  const pinButton = document.getElementById('pin-button');
-  pinButton.classList.toggle('pinned');
-  ipcRenderer.sendTo(parentId, pinned ? 'unpin' : 'pin');
-  pinned = !pinned;
-  pinButton.title = pinned ? '取消置顶' : '置顶';
-};
-
-const reload = () => {
-  if (webview.getURL().startsWith(CHATGPT_URL)) {
-    webview.reload();
-  } else {
-    webview.loadURL(CHATGPT_URL);
-  }
-};
-
 const main = () => {
   webview = document.querySelector('webview');
 
@@ -59,13 +41,6 @@ const main = () => {
     webview.insertText(text);
   };
 
-  ipcRenderer.on('close', (event) => {
-    console.log('close', event);
-
-    if (webview) {
-      webview.closeDevTools();
-    }
-  });
   ipcRenderer.on('input', (event, message) => {
     if (loaded) {
       input(message);
@@ -78,7 +53,6 @@ const main = () => {
     if (utools.isDev()) {
       webview.openDevTools({ mode: 'detach' });
     }
-    document.activeElement.blur();
     const url = webview.getURL();
 
     if (!url.startsWith(CHATGPT_URL)) return;
@@ -104,13 +78,17 @@ const main = () => {
 
   webview.addEventListener('did-navigate', onload);
 
-  webview.addEventListener('console-message', (event) => {
-    // console.log('CHATGPT console-message', event);
-    const { level, message } = event;
+  // React to messages from the webview if it is a command
+  webview.addEventListener('console-message', async (event) => {
+    if (!event.message.startsWith('!_COMMAND_')) return;
+    const message = event.message.replace('!_COMMAND_', '');
 
     switch (message) {
-      case 'TOGGLE_PIN':
-        togglePin();
+      case 'PIN':
+        ipcRenderer.sendTo(parentId, 'pin');
+        break;
+      case 'UNPIN':
+        ipcRenderer.sendTo(parentId, 'unpin');
         break;
       case 'ZOOM_IN':
         webview.setZoomLevel(webview.getZoomLevel() + 1);
@@ -120,31 +98,30 @@ const main = () => {
         break;
       case 'ZOOM_RESET':
         webview.setZoomLevel(0);
+        break;
+      default:
+        break;
     }
-    if (message === 'TOGGLE_PIN') {
-      togglePin();
+
+    // A workaround to focus the textarea
+    if (message.startsWith('INITIALIZED')) {
+      console.log(message);
+      const matches = message.match(/INITIALIZED:\s*(\d+),\s*(\d+)/);
+      const x = parseInt(matches[1]);
+      const y = parseInt(matches[2]);
+
+      console.log(`x: ${x}, y: ${y}`); // Output: x: 42, y: 99
+      webview.sendInputEvent({
+        type: 'mouseDown',
+        x,
+        y,
+        button: 'left',
+        clickCount: 1,
+      });
     }
   });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('WINDOW DOMContentLoaded');
-
-  document
-    .getElementById('pin-button')
-    .addEventListener('click', () => togglePin());
-  document
-    .getElementById('reload-button')
-    .addEventListener('click', () => reload());
-
-  document.getElementById('copy-button').addEventListener('click', () => {
-    webview.executeJavaScript('window.copyChatAsMarkdown()');
-    utools.showNotification('已复制对话为 Markdown');
-  });
-
-  document.getElementById('save-button').addEventListener('click', () => {
-    webview.executeJavaScript('window.saveChatAsMarkdown()');
-  });
-
   main();
 });

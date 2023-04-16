@@ -36,20 +36,12 @@ const createWindow = () => {
       },
     },
     () => {
-      // win.focus();
+      win.focus();
       send('init');
-      if (utools.isDev()) win.webContents.openDevTools();
+      // if (utools.isDev()) win.webContents.openDevTools();
       if (type === 'over') send('input', payload);
     }
   );
-  // log('Window Created', {
-  //   win,
-  //   isNormal: win.isNormal(),
-  //   isMinimized: win.isMinimized(),
-  //   isVisiable: win.isVisible(),
-  //   isEnabled: win.isEnabled(),
-  //   isFullScreen: win.isFullScreen(),
-  // });
 };
 
 ipcRenderer.on('pin', (event) => {
