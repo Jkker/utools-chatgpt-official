@@ -20,6 +20,8 @@
 - 快捷键
   - 复制：`Ctrl + C`
   - 粘贴：`Ctrl + V`
+  - 撤销：`Ctrl + Z`
+  - 重做：`Ctrl + Y`
   - 刷新页面：`Ctrl + R` 或 `F5`
   - 置顶窗口：`Ctrl + T`
   - 复制对话：`Ctrl + M`
@@ -33,6 +35,9 @@
   - 放大内容：`Ctrl + ➕`
   - 缩小内容：`Ctrl + ➖`
   - 重置缩放：`Ctrl + 0`
+  - 展开/折叠输入框`Ctrl + E`
 - 使用 MathJax 自动渲染 Latex 公式
   - 参考： [chatgpt-latex-render.js](https://greasyfork.org/zh-CN/scripts/456049)
 - 隐藏 Upgrade to Plus 提示
+- Heartbeat 保活
+  - 参考： [chatgpt-heartbeat](https://greasyfork.org/scripts/462967-chatgpt-heartbeat)

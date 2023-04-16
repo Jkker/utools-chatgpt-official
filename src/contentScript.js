@@ -24,17 +24,16 @@
   };
 
   const TEXT = {
-    refresh: '刷新',
-    unpin: '取消置顶',
-    pin: '置顶',
-    collapse: '折叠',
-    expand: '展开',
-    cut: '剪切',
-    copy: '复制',
-    paste: '粘贴',
-    delete: '删除',
-    saveChatAsMarkdown: '导出为 Markdown',
-    copyChatAsMarkdown: '复制为 Markdown',
+    refresh: '刷新 (Ctrl + R)',
+    unpin: '取消置顶 (Ctrl + T)',
+    pin: '置顶 (Ctrl + T)',
+    collapse: '折叠 (Ctrl + E)',
+    expand: '展开 (Ctrl + E)',
+    cut: '剪切 (Ctrl + X)',
+    copy: '复制 (Ctrl + C)',
+    paste: '粘贴 (Ctrl + V)',
+    saveChatAsMarkdown: '导出为 Markdown (Ctrl + S)',
+    copyChatAsMarkdown: '复制为 Markdown ',
   };
 
   // END_SECTION
@@ -329,6 +328,9 @@
 
   const createTextareaResizeButton = () => {
     const textarea = getTextarea();
+    // return if x-resize is already initialized
+    if (textarea.dataset.resize === 'initialized') return;
+    textarea.dataset.resize = 'initialized';
     const container = document.querySelector('form > div > div:last-child');
     container.querySelector('button > svg').style.marginRight = 0;
     const button = document.createElement('div');
@@ -375,6 +377,7 @@
 
     // focus textarea on click
     container.addEventListener('click', () => getTextarea().focus());
+    window.toggleTextarea = toggle;
   };
 
   const createToolbar = (items) => {
@@ -497,6 +500,11 @@
           return;
         }
 
+        case 'e': {
+          event.preventDefault();
+          window.toggleTextarea();
+        }
+
         default:
           break;
       }
@@ -523,10 +531,16 @@
   const init = () => {
     if (window.pluginInitialized) return;
     window.pluginInitialized = true;
+    const textarea = getTextarea();
 
     // Load features
     createContextMenu();
     createTextareaResizeButton();
+    // on dom change
+    new MutationObserver(() => {
+      console.log('dom changed');
+      createTextareaResizeButton();
+    }).observe(document, { childList: true, subtree: true });
 
     createToolbar([
       {
@@ -636,7 +650,6 @@ form > div div:last-child:focus-within {
     document.addEventListener('keydown', keydownHandler);
 
     // Send the coordinates of the textarea to the main process
-    const textarea = getTextarea();
     const { left, top, width, height } = textarea.getBoundingClientRect();
     const x = Math.floor(left + width / 2);
     const y = Math.floor(top + height / 2);
