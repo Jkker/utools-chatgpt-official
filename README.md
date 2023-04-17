@@ -14,9 +14,14 @@
 - 超级面板集成
 - 右键菜单集成
   - 复制文本 （选中文本时）
+  - 字数统计 （选中文本时）
   - 复制回复为 Markdown （未选中文本时）
   - 复制公式为 Tex / MathML （悬浮于公式上时）
-  - 刷新页面
+  - 剪切文本 （选中输入框内文本时）
+- 输入框优化
+  - 大小调整
+  - 换行输入
+  - 语法检查
 - 快捷键
   - 复制：`Ctrl + C`
   - 粘贴：`Ctrl + V`
@@ -31,11 +36,12 @@
   - 上一个会话：`Ctrl + Shift + Tab`
   - 聚焦输入框：`Ctrl + /` 或 `Enter` 或输入任何字符
   - 取消聚焦：`Esc`
+  - 展开/折叠输入框：`Ctrl + E`
   - 发送消息：`Ctrl + Enter`
+  - 输入换行：`Shift + Enter`
   - 放大内容：`Ctrl + ➕`
   - 缩小内容：`Ctrl + ➖`
   - 重置缩放：`Ctrl + 0`
-  - 展开/折叠输入框`Ctrl + E`
 - 使用 MathJax 自动渲染 Latex 公式
   - 参考： [chatgpt-latex-render.js](https://greasyfork.org/zh-CN/scripts/456049)
 - 隐藏 Upgrade to Plus 提示
