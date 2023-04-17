@@ -1,7 +1,8 @@
 const CHATGPT_URL = 'https://chat.openai.com';
 const LIBRARIES = [
   'chatgpt-heartbeat.js',
-  'showdown.min.js',
+  // 'showdown.min.js',
+  'turndown.js',
   'chatgpt-latex-render.js',
 ];
 const fs = require('fs');

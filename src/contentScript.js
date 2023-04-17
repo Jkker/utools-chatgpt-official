@@ -82,20 +82,18 @@
   // END_SECTION
 
   const createMarkdownConverter = () => {
-    const converter = new window.showdown.Converter();
-
+    const turndownService = new TurndownService();
     const htmlProseToMarkdown = (prose) =>
-      Array.from(prose.children, (e) => {
-        if (e.tagName.toLowerCase() === 'pre') {
-          return `\`\`\`${
-            e.querySelector('code').className.match(/language-(.*)/)[1] ?? ''
-          }\n${e.querySelector('code').textContent.trim()}\n\`\`\``;
-        }
-        return converter.makeMarkdown(e.outerHTML).trim();
-      })
-        .join('\n\n')
-        .replaceAll('\n<!-- -->', '');
-
+      Array.from(prose.children, (e) =>
+        // Convert code block
+        e.tagName.toLowerCase() === 'pre'
+          ? // Detect language
+            `\`\`\`${
+              e.querySelector('code').className.match(/language-(.*)/)[1] ?? ''
+            }\n${e.querySelector('code').textContent.trim()}\n\`\`\``
+          : // Convert others to markdown
+            turndownService.turndown(e)
+      ).join('\n\n');
     const chat2markdown = () => {
       const chat = document.querySelectorAll('.text-base');
       let md = '';
