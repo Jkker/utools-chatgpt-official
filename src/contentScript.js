@@ -85,7 +85,8 @@
   // END_SECTION
 
   const createMarkdownConverter = () => {
-    const turndownService = new TurndownService();
+    const turndownService = new TurndownService({ headingStyle: 'atx' });
+    turndownService.use(turndownPluginGfm.gfm);
     const htmlProseToMarkdown = (prose) =>
       Array.from(prose.children, (e) =>
         // Convert code block
@@ -95,7 +96,7 @@
               e.querySelector('code').className.match(/language-(.*)/)[1] ?? ''
             }\n${e.querySelector('code').textContent.trim()}\n\`\`\``
           : // Convert others to markdown
-            turndownService.turndown(e)
+            turndownService.turndown(e.outerHTML)
       ).join('\n\n');
     const chat2markdown = () => {
       const chat = document.querySelectorAll('.text-base');
