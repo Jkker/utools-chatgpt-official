@@ -1,0 +1,10 @@
+main > div > form ~ div {
+  padding: 8px !important;
+}
+main > div > form ~ div > span {
+  display: none !important;
+}
+[class^='react-scroll-to-bottom']
+  > [class='px-2 relative w-full flex flex-col h-full py-2 md:py-6'] {
+  padding-top: 0.5rem !important;
+}

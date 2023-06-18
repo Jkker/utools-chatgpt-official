@@ -1,0 +1,83 @@
+.hljs-punctuation,
+.hljs-comment,
+.hljs-doctag,
+.hljs-meta {
+  color: #79777a !important;
+}
+
+.hljs-type,
+.hljs-title,
+.hljs-title.class_,
+.hljs-attr,
+.hljs-attribute,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: #78dce8 !important;
+}
+.hljs-built_in,
+.hljs-title.function_,
+.hljs-formula,
+.hljs-link,
+.hljs-selector-class,
+.hljs-addition,
+.hljs-nan {
+  color: #a9dc76 !important;
+}
+
+.hljs-literal,
+.hljs-number,
+.hljs-char.escape,
+.hljs-symbol,
+.hljs-variable,
+.hljs-variable.constant_ {
+  color: #ab9df2 !important;
+}
+
+.hljs-params,
+.hljs-regexp,
+.hljs-selector-id {
+  color: #fc9867 !important;
+}
+
+.hljs-property,
+.hljs-section,
+.hljs-bullet,
+.hljs-emphasis,
+.hljs-strong,
+.hljs-variable.language_,
+.hljs-template-variable {
+  color: #fcfcfa !important;
+}
+
+.hljs-keyword,
+.hljs-operator,
+.hljs-subst,
+.hljs-tag,
+.hljs-name,
+.hljs-code,
+.hljs-selector-tag,
+.hljs-template-tag,
+.hljs-deletion,
+.hljs-meta keyword {
+  color: #ff6188 !important;
+}
+
+.hljs-string,
+.hljs-quote,
+.hljs-meta.prompt {
+  color: #ffd866 !important;
+}
+
+pre > div.bg-black {
+  background-color: #30313c !important;
+}
+body code,
+body pre {
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+}
+
+html,
+body {
+  font-family: Lexend, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}

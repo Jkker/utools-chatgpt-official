@@ -1,0 +1,30 @@
+{
+  "name": "utools-chatgpt-official",
+  "version": "1.3.0",
+  "description": "uTools ChatGPT Plugin",
+  "author": "Jkker",
+  "homepage": "https://github.com/Jkker/utools-chatgpt-official",
+  "preload": "./app.js",
+  "platform": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "logo": "./chatgpt-icon.png",
+  "features": [
+    {
+      "code": "Open ChatGPT",
+      "explain": "Open ChatGPT",
+      "cmds": [
+        "chatgpt",
+        "c",
+        {
+          "type": "over",
+          "label": "Ask ChatGPT",
+          "minLength": 1,
+          "maxLength": 10000
+        }
+      ]
+    }
+  ]
+}
