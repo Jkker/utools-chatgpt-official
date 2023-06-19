@@ -8,7 +8,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import type { CompletionSource } from '@codemirror/autocomplete';
+import type { CompletionSource, Completion } from '@codemirror/autocomplete';
 import { autocompletion, snippet } from '@codemirror/autocomplete';
 import { markdown } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -81,14 +81,19 @@ export function PromptEditor({
       // no word before the cursor, don't open completions.
       const matchBefore = context.matchBefore(/\w+/);
       if (!context.explicit && !(activateOnTyping && matchBefore)) return null;
+      const options: Completion[] = snippetStore.snippets.map(
+        ({ label, content, description }) =>
+          ({
+            label: label ?? content,
+            info: content,
+            detail: description ?? '',
+            type: 'snippet',
+            apply: snippet(content),
+          } as Completion)
+      );
       return {
         from: matchBefore ? matchBefore.from : context.pos,
-        options: snippetStore.snippets.map(({ label, content }) => ({
-          label: label ?? content,
-          info: content,
-          type: 'snippet',
-          apply: snippet(content),
-        })),
+        options,
         validFor: /^\w*$/,
       };
     },
@@ -133,6 +138,9 @@ export function PromptEditor({
             },
             '.cm-editor': {
               fontSize: '1rem !important',
+            },
+            '.cm-tooltip *': {
+              fontFamily: 'Lexend, sans-serif !important',
             },
           }}
           position="relative"

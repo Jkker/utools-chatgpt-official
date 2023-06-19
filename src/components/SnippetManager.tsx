@@ -161,7 +161,10 @@ const SnippetCard: FC<Snippet> = (snippet) => {
                 </Button>
                 <Button
                   isDisabled={
-                    snippet.content === formData.content || !formData.content
+                    (snippet.content === formData.content &&
+                      snippet.label === formData.label &&
+                      snippet.description === formData.description) ||
+                    !formData.content
                   }
                   colorScheme="blue"
                   leftIcon={<Icon as={MdSave} />}

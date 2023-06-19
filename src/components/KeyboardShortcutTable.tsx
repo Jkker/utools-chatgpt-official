@@ -34,7 +34,7 @@ function convertToNestedArray(object) {
 }
 
 const CmdOrCtrl =
-  'utools' in window ? (utools.isMacOS() ? 'Meta' : 'Ctrl') : 'Ctrl';
+  'utools' in window ? (utools.isMacOS() ? '⌘' : 'Ctrl') : 'Ctrl';
 
 const KeyboardShortcutTable = () => {
   const { T } = useSettings();
