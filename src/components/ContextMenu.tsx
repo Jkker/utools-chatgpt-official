@@ -29,6 +29,7 @@ import {
 } from 'react-icons/md';
 
 import { T } from '../assets/i18n';
+import { getTokenCount } from '../utils/tokenCount';
 
 export interface ExtendedContextMenuParams extends Electron.ContextMenuParams {
   windowHeight?: number;
@@ -39,7 +40,6 @@ interface ContextMenuProps {
   params: ExtendedContextMenuParams;
   isOpen?: boolean;
   onClose?: () => void;
-  getTokenCount: (text: string) => number;
   actions: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: (...args: any) => any;
@@ -79,7 +79,6 @@ const ContextMenu: FC<ContextMenuProps> = ({
   isOpen,
   onClose: onClose,
   actions,
-  getTokenCount,
 }) => {
   const modelContentRef = useRef(null);
   params = params || ({} as ExtendedContextMenuParams);
@@ -207,7 +206,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
     if (isOpen && params.selectionText) {
       setTokenCount(getTokenCount(params.selectionText));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, params.selectionText]);
 
   const tokenLimit = actions.getTokenLimit();

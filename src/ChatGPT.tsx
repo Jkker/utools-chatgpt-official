@@ -5,7 +5,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import type { ContextMenuEvent } from 'electron';
-import { getEncoding } from 'js-tiktoken';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { T } from './assets/i18n';
@@ -27,10 +26,7 @@ import { useSettings } from './hooks/useSettings';
 import cleanupCSS from './scripts/chatgpt-cleanup.css?raw';
 import contentScript from './scripts/chatgpt-content-script.js?raw';
 import hljsTheme from './scripts/hljs-monokai-pro.css?raw';
-
-const gptEncoder = getEncoding('cl100k_base');
-
-const getTokenCount = (text: string) => gptEncoder.encode(text).length;
+import { getTokenCount } from './utils/tokenCount';
 
 function App() {
   const webviewRef = useRef<Electron.WebviewTag & HTMLWebViewElement>(null);
@@ -319,7 +315,6 @@ function App() {
             isOpen={isContextMenuOpen}
             onClose={closeContextMenu}
             actions={actions}
-            getTokenCount={getTokenCount}
           />
           <ToolBar
             actions={actions}
@@ -336,7 +331,6 @@ function App() {
             actions={actions}
           />
           <PromptEditor
-            getTokenCount={getTokenCount}
             isOpen={isEditorOpen}
             // onOpen={openEditor}
             onClose={closeEditor}

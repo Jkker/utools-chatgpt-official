@@ -1,3 +1,4 @@
+
 export const CHAT_GPT_URL = 'https://chat.openai.com';
 export const GPT4_MAX_TOKENS = 4000; // 4096 is the max
 export const GPT3_5_MAX_TOKENS = 8000; // 8192 is the max
@@ -13,6 +14,8 @@ export const SELECTORS = {
   saveEditSubmitButton: `'textarea ~ div > button[class="btn relative btn-primary mr-2"]'`,
   cancelEditButton: `'textarea ~ div > button[class="btn relative btn-neutral"]'`,
   submitPromptButton: `'#prompt-textarea ~ button'`,
+  regenerateButton: `'form > div > div:nth-child(2) > div > button'`,
+  regenerateButton2: `'form > div > div:nth-child(1) > div > button'`,
 };
 
 export const KEYBOARD_SHORTCUTS = {
@@ -33,7 +36,7 @@ export const KEYBOARD_SHORTCUTS = {
   'CmdOrCtrl + Tab': 'nextChat',
   'CmdOrCtrl + Enter': 'submitAll',
   'CmdOrCtrl + M': 'toggleGPTModel',
-  'CmdOrCtrl + L': 'toggleColorMode',
+  // 'CmdOrCtrl + L': 'toggleColorMode',
   'CmdOrCtrl + T': 'togglePin',
   'CmdOrCtrl + P': 'togglePreferences',
   'CmdOrCtrl + E': 'openEditor',

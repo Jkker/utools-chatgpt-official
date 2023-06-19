@@ -12,7 +12,7 @@ import type { CompletionSource } from '@codemirror/autocomplete';
 import { autocompletion, snippet } from '@codemirror/autocomplete';
 import { markdown } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { ViewUpdate } from '@codemirror/view';
+import { EditorView, ViewUpdate } from '@codemirror/view';
 import { githubLightInit } from '@uiw/codemirror-theme-github';
 import { okaidiaInit } from '@uiw/codemirror-theme-okaidia';
 import CodeMirror from '@uiw/react-codemirror';
@@ -21,14 +21,14 @@ import React, { useCallback, useEffect } from 'react';
 import { MdEdit } from 'react-icons/md';
 import { T } from '../assets/i18n';
 import useSnippet from '../hooks/useSnippet';
-import { EditorView } from '@codemirror/view';
+import { getTokenCount } from '../utils/tokenCount';
+
 export function PromptEditor({
   activateOnTyping = true,
   isOpen,
   onClose,
   finalFocusRef = undefined,
   actions,
-  getTokenCount,
 }) {
   const [value, setValue] = React.useState('');
   const [tokenCount, setTokenCount] = React.useState(0);

@@ -1,32 +1,19 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #a1a1a1 #e5e5e5;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+    background: transparent;
+  }
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--chakra-colors-gray-300);
+    border-radius: var(--chakra-radii-md);
+  }
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: var(--chakra-radii-md);
+  }
 }
-
-/* .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: #a1a1a1 #e5e5e5;
-    &::-webkit-scrollbar {
-      width: 8px;
-      height: 10px;
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      @apply bg-gray-300 rounded dark:bg-gray-600;
-    }
-    &::-webkit-scrollbar-track {
-      @apply rounded dark:bg-transparent;
-    }
-  } */
