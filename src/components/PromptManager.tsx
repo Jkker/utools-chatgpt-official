@@ -40,9 +40,8 @@ import {
 import { CreatableSelect, Select } from 'chakra-react-select';
 import debounce from 'lodash.debounce';
 import { MdAdd, MdClear, MdOpenInNew } from 'react-icons/md';
-import { T } from '../assets/i18n';
 import { PALETTE_COLORS } from '../constants';
-import useSnippet from '../hooks/useSnippet';
+import { useSettings } from '../hooks/useSettings';
 
 type ColorEntry = [ThemeTypings['colorSchemes'], Colors[keyof Colors]];
 type ColorMap = Record<string, ColorEntry>;
@@ -169,6 +168,7 @@ const CreateNewPromptModal: React.FC<{
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({ tagOptions, setTags }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { T } = useSettings();
 
   return (
     <>
@@ -237,6 +237,8 @@ const initFilteredPrompts = data
   .sort((a, b) => a.weight - b.weight);
 
 const PromptManager: React.FC = () => {
+  const { T } = useSettings();
+
   const { colors } = useTheme<Theme>();
   const [en, setEn] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

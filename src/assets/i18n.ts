@@ -1,4 +1,4 @@
-export const T = {
+export const EN = {
   undo: 'Undo',
   redo: 'Redo',
   cut: 'Cut',
@@ -12,10 +12,21 @@ export const T = {
 
   selectAll: 'Select All',
   reload: 'Reload',
+  reloadIgnoringCache: 'Reload Ignoring Cache',
   tokens: 'Tokens',
   spelling: 'Spelling',
   settings: 'Settings',
   openDevTools: 'DevTools',
+  toggleWindowDevTools: 'Toggle Window DevTools',
+  toggleSidebar: 'Toggle Sidebar',
+  focusPromptTextarea: 'Focus Prompt Textarea',
+  newChat: 'New Chat',
+  prevChat: 'Previous Chat',
+  nextChat: 'Next Chat',
+  submitAll: 'Submit',
+  toggleGPTModel: 'Toggle GPT Model',
+  togglePin: 'Toggle Pin',
+  togglePreferences: 'Toggle Preferences',
   openInBrowser: 'Open in Browser',
   copyLinkAddress: 'Copy Link Address',
   pin: 'Pin',
@@ -63,12 +74,12 @@ export const T = {
   closeEditor: 'Close',
 
   label: 'Label',
-  SnippetManager: 'Snippet Manager',
   createNew: 'Create New',
 
   snippet: 'Snippet',
   snippets: 'Snippets',
-  snippetContentHelperText: `Content of the snippet. You can use \${<variable>} to define a variable. For example, "Hello, \${<name>}" will be rendered as "Hello, <name>".`,
+  snippetContentHelperText:
+    'Content of the snippet  written using syntax like this: \n "for (let ${index} = 0; ${index} < ${end}; ${index}++) {\n\t${}\n}"',
   snippetLabelHelperText:
     'The label to show in the completion picker. This is what input is matched agains to determine whether a completion matches (and how well it matches).',
   snippetDescriptionHelperText:
@@ -78,3 +89,100 @@ export const T = {
   shortcuts: 'Shortcuts',
   command: 'Command',
 };
+
+export const ZH = {
+  undo: '撤销',
+  redo: '重做',
+  cut: '剪切',
+  copy: '复制',
+  paste: '粘贴',
+  delete: '删除',
+  confirmDeleteTitle: '确认删除',
+  confirmDeleteBody: '此操作无法撤消。您确定要删除此片段吗？',
+  edit: '编辑',
+
+  selectAll: '全选',
+  reload: '刷新',
+  reloadIgnoringCache: '忽略缓存并刷新',
+  tokens: 'Tokens',
+  spelling: '拼写',
+  settings: '设置',
+  openDevTools: '开发者工具',
+  toggleWindowDevTools: '窗口开发者工具',
+  toggleSidebar: '切换侧边栏',
+  focusPromptTextarea: '聚焦输入框',
+  newChat: '新建对话',
+  prevChat: '上一个对话',
+  nextChat: '下一个对话',
+  submitAll: '提交',
+  toggleGPTModel: '切换 GPT 模型',
+  togglePin: '置顶/取消置顶',
+  togglePreferences: '打开/关闭偏好设置',
+  openInBrowser: '在浏览器中打开',
+  copyLinkAddress: '复制链接地址',
+  pin: '置顶',
+  unpin: '取消置顶',
+  pinned: '已置顶',
+  unpinned: '已取消置顶',
+  toggle: '切换',
+  close: '关闭',
+  exceedingTokenLimit: '超过 token 限制：',
+  clearSelection: '清除选择',
+  save: '保存',
+  cancel: '取消',
+  switchLanguage: '切换语言',
+  chinese: '中文',
+  english: 'English',
+  zh: '中',
+  en: 'En',
+  search: '搜索',
+  createNewPrompt: '创建新的 Prompt',
+  searchPrompt: '搜索 Prompt',
+  editPrompt: '编辑 Prompt',
+  clearSearch: '清除搜索',
+  source: '来源',
+  create: '创建',
+
+  tags: '标签',
+  title: '标题',
+  content: '内容',
+  description: '描述',
+  remark: '备注',
+
+  prompt: 'Prompt',
+  preferences: '偏好设置',
+
+  chatgptURL: 'ChatGPT URL',
+  theme: '主题',
+  language: '语言',
+  keepAlive: '保持连接',
+
+  light: '浅色',
+  dark: '深色',
+  system: '跟随系统',
+
+  openEditor: '编辑器',
+  closeEditor: '关闭编辑器',
+
+  label: '标签',
+  createNew: '新建',
+
+  snippet: '片段',
+  snippets: '片段',
+  snippetContentHelperText:
+    '片段内容；支持 Tab 变量语法： \n "for (let ${index} = 0; ${index} < ${end}; ${index}++) {\n\t${}\n}"',
+  snippetLabelHelperText:
+    '在自动补全中显示的标签。这是输入匹配的内容，以确定自动补全是否匹配（以及匹配程度如何）。',
+  snippetDescriptionHelperText: '可选的短信息，以不同的样式显示在标签后面。',
+
+  shortcut: '快捷键',
+  shortcuts: '快捷键',
+  command: '命令',
+
+  zoomIn: '放大',
+  zoomOut: '缩小',
+  zoomReset: '重置缩放',
+
+};
+
+export const T = 'utools' in window ? ZH : EN;

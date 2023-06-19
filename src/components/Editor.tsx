@@ -19,7 +19,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect } from 'react';
 import { MdEdit } from 'react-icons/md';
-import { T } from '../assets/i18n';
+import { useSettings } from '../hooks/useSettings';
 import useSnippet from '../hooks/useSnippet';
 import { getTokenCount } from '../utils/tokenCount';
 
@@ -30,6 +30,8 @@ export function PromptEditor({
   finalFocusRef = undefined,
   actions,
 }) {
+  const { T } = useSettings();
+
   const [value, setValue] = React.useState('');
   const [tokenCount, setTokenCount] = React.useState(0);
   const [tokenLimit, setTokenLimit] = React.useState(0);

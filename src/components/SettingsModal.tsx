@@ -24,13 +24,14 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { MdSettings } from 'react-icons/md';
-import { T } from '../assets/i18n';
+
 import { settingsFormData, useSettings } from '../hooks/useSettings';
 import KeyboardShortcutTable from './KeyboardShortcutTable';
 import SnippetManager from './SnippetManager';
 const PreferencesForm = ({ actions }) => {
   const settings = useSettings();
   const { colorMode } = useColorMode();
+  const { T, language } = settings;
 
   return (
     <Container
@@ -44,7 +45,7 @@ const PreferencesForm = ({ actions }) => {
         <FormLabel>{T.theme}</FormLabel>
 
         <RadioGroup
-          defaultValue={colorMode}
+          value={colorMode}
           onChange={(v) => actions.setColorMode(v as ColorMode)}
         >
           <Stack direction="row" spacing={4}>
@@ -54,7 +55,21 @@ const PreferencesForm = ({ actions }) => {
           </Stack>
         </RadioGroup>
       </FormControl>
-      {settingsFormData.map(
+      <FormControl>
+        <FormLabel>{T.language}</FormLabel>
+
+        <RadioGroup
+          value={language}
+          onChange={(v) => settings.setLanguage(v as typeof language)}
+        >
+          <Stack direction="row" spacing={4}>
+            <Radio value="zh">{T.chinese}</Radio>
+            <Radio value="en">{T.english}</Radio>
+          </Stack>
+        </RadioGroup>
+      </FormControl>
+
+      {(settingsFormData as any).map(
         ({
           label,
           description,
@@ -107,7 +122,7 @@ const PreferencesForm = ({ actions }) => {
 };
 
 function SettingsModal({ isOpen, onClose, actions }) {
-  const saveSettings = useSettings().save;
+  const { save: saveSettings, T } = useSettings();
   const handleClose = useCallback(() => {
     saveSettings();
     onClose();

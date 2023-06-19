@@ -7,7 +7,6 @@ import {
 import type { ContextMenuEvent } from 'electron';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { T } from './assets/i18n';
 import ContextMenu, {
   ExtendedContextMenuParams as CtxParams,
 } from './components/ContextMenu';
@@ -86,7 +85,7 @@ function App() {
         setIsPinned(isPinned);
         toast({
           id: 'togglePin-toast',
-          title: isPinned ? T.pinned : T.unpinned,
+          title: isPinned ? settings.T.pinned : settings.T.unpinned,
           status: isPinned ? 'success' : 'info',
           duration: 2000,
           isClosable: true,

@@ -50,7 +50,7 @@ const defaultSnippets: Snippet[] = [
   {
     id: 0,
     label: "Let's think step by step.",
-    content: "\nAnswer: Let's think step by step.",
+    content: "Let's think step by step.",
     description: 'Chain-of-thoughts (CoT) template',
   },
 /*   {

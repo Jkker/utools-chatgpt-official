@@ -25,8 +25,8 @@ import {
 } from '@chakra-ui/react';
 import { MdClose, MdCopyAll, MdDelete, MdEdit, MdSave } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
-import { T } from '../assets/i18n';
 import useSnippet, { Snippet } from '../hooks/useSnippet';
+import { useSettings } from '../hooks/useSettings';
 
 const inputStyles = {
   bg: 'gray.50',
@@ -41,6 +41,7 @@ const SnippetCard: FC<Snippet> = (snippet) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Snippet>(snippet ?? ({} as Snippet));
   const { update, delete: deleteSnippet } = useSnippet();
+  const { T } = useSettings();
 
   const handleChange = (key: string) => (e) => {
     setFormData((data) => ({ ...data, [key]: e.target.value }));
@@ -221,6 +222,8 @@ const SnippetCard: FC<Snippet> = (snippet) => {
   );
 };
 const NewSnippetCard: FC = () => {
+  const { T } = useSettings();
+
   const [isCreating, setIsCreating] = useState(false);
   const [content, setContent] = useState('');
   const [description, setDescription] = useState('');

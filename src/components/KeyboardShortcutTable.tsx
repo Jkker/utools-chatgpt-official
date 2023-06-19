@@ -1,15 +1,8 @@
-import {
-  Kbd,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr
-} from '@chakra-ui/react';
-import { T } from '../assets/i18n';
+import { Kbd, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { KEYBOARD_SHORTCUTS } from '../constants';
+import { useSettings } from '../hooks/useSettings';
+
 function camelCaseToSentence(camelCaseString = '') {
   // Split the camel case string into words
   const words = camelCaseString.replace(/([a-z])([A-Z])/g, '$1 $2').split(' ');
@@ -43,28 +36,31 @@ function convertToNestedArray(object) {
 const CmdOrCtrl =
   'utools' in window ? (utools.isMacOS() ? 'Meta' : 'Ctrl') : 'Ctrl';
 
-console.log(convertToNestedArray(KEYBOARD_SHORTCUTS));
-const KeyboardShortcutTable = () => (
-  <Table variant="simple">
-    <Thead>
-      <Tr>
-        <Th>{T.command}</Th>
-        <Th>{T.shortcut}</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      {convertToNestedArray(KEYBOARD_SHORTCUTS).map(([command, keys]) => (
-        <Tr key={command}>
-          <Td>{camelCaseToSentence(command)}</Td>
-          <Td display="flex" gap={2}>
-            {keys.map((key) => (
-              <Kbd key={key}>{key.replace('CmdOrCtrl', CmdOrCtrl)}</Kbd>
-            ))}
-          </Td>
+const KeyboardShortcutTable = () => {
+  const { T } = useSettings();
+
+  return (
+    <Table variant="simple">
+      <Thead>
+        <Tr>
+          <Th>{T.command}</Th>
+          <Th>{T.shortcut}</Th>
         </Tr>
-      ))}
-    </Tbody>
-  </Table>
-);
+      </Thead>
+      <Tbody>
+        {convertToNestedArray(KEYBOARD_SHORTCUTS).map(([command, keys]) => (
+          <Tr key={command}>
+            <Td>{T[command] ?? camelCaseToSentence(command)}</Td>
+            <Td display="flex" gap={2}>
+              {keys.map((key) => (
+                <Kbd key={key}>{key.replace('CmdOrCtrl', CmdOrCtrl)}</Kbd>
+              ))}
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  );
+};
 
 export default KeyboardShortcutTable;

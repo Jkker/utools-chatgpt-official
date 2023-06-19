@@ -1,6 +1,6 @@
 import debounce from 'lodash.debounce';
 import { create } from 'zustand';
-
+import { EN, ZH } from '../assets/i18n';
 type Settings = {
   chatgptURL: string;
   language: 'zh' | 'en';
@@ -15,11 +15,12 @@ type SettingsStore = Settings & {
   debouncedSet: (name: string, value: any) => void;
   load: () => void;
   save: () => void;
+  T: typeof EN;
 };
 
 const defaultPreferences: Settings = {
   chatgptURL: 'https://chat.openai.com',
-  language: 'en',
+  language: 'zh',
   keepAlive: false,
 };
 
@@ -27,7 +28,7 @@ export const useSettings = create<SettingsStore>()((set, get) => ({
   chatgptURL: 'https://chat.openai.com',
   setChatgptURL: (url) => set({ chatgptURL: url }),
   language: 'en',
-  setLanguage: (language) => set({ language }),
+  setLanguage: (language) => set({ language, T: language === 'zh' ? ZH : EN }),
   keepAlive: false,
   setKeepAlive: (keepAlive) => set({ keepAlive }),
   set: (name, value) => set({ [name]: value }),
@@ -52,8 +53,10 @@ export const useSettings = create<SettingsStore>()((set, get) => ({
     set({
       ...defaultPreferences,
       ...preferences,
+      T: preferences.language === 'zh' ? ZH : EN,
     });
   },
+  T: ZH,
 }));
 
 export const settingsFormData = [
@@ -65,7 +68,7 @@ export const settingsFormData = [
     placeholder: defaultPreferences.chatgptURL,
     required: true,
   },
-  {
+  /*  {
     label: 'Language',
     name: 'language',
     type: 'radio',
@@ -75,12 +78,12 @@ export const settingsFormData = [
       { label: '中文', value: 'zh' },
     ],
     required: true,
-  },
-  {
+  }, */
+  /* {
     label: 'Keep Alive',
     description: 'Keep the app alive when the window is closed',
     name: 'keepAlive',
     type: 'checkbox',
     required: true,
-  },
+  }, */
 ];

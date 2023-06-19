@@ -28,8 +28,8 @@ import {
   MdWarningAmber,
 } from 'react-icons/md';
 
-import { T } from '../assets/i18n';
 import { getTokenCount } from '../utils/tokenCount';
+import { useSettings } from '../hooks/useSettings';
 
 export interface ExtendedContextMenuParams extends Electron.ContextMenuParams {
   windowHeight?: number;
@@ -80,6 +80,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
   onClose: onClose,
   actions,
 }) => {
+  const { T } = useSettings();
   const modelContentRef = useRef(null);
   params = params || ({} as ExtendedContextMenuParams);
   const hasText = params.selectionText?.length > 0;

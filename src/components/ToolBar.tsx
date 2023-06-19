@@ -15,9 +15,9 @@ import {
   MdRefresh,
   MdSettings,
 } from 'react-icons/md';
-import { T } from '../assets/i18n';
 
 import { BsPinAngle, BsPinAngleFill } from 'react-icons/bs';
+import { useSettings } from '../hooks/useSettings';
 
 const Button = ({
   label,
@@ -79,6 +79,7 @@ const ToolBar: FC<{
   colorMode: ColorMode;
 }> = ({ actions, isPinned, children, openSettings, colorMode, openEditor }) => {
   const isDev = useRef(utools.isDev());
+  const { T } = useSettings();
 
   return (
     <Flex
