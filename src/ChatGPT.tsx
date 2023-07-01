@@ -229,13 +229,13 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.colorMode, webviewInitialized]);
 
-  // update colormode if chakra color mode changes (e.g. from system)
-  useEffect(() => {
-    if (webviewInitialized && chakraColorMode !== settings.resolvedColorMode) {
-      webviewActions.setColorMode(chakraColorMode);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chakraColorMode, settings.resolvedColorMode]);
+  // // update colormode if chakra color mode changes (e.g. from system)
+  // useEffect(() => {
+  //   if (webviewInitialized && chakraColorMode !== settings.resolvedColorMode) {
+  //     webviewActions.setColorMode(chakraColorMode);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [chakraColorMode, settings.resolvedColorMode]);
 
   // * Init
   useEffect(() => {

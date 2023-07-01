@@ -10,11 +10,13 @@ export const resolveColorMode = (colorMode: ColorModeWithSystem) => {
   return colorMode;
 };
 
+export const resolveLanguage = (language: 'zh' | 'en'): typeof EN =>
+  language === 'zh' ? ZH : EN;
+
 type Settings = {
   chatgptURL: string;
   language: 'zh' | 'en';
   keepAlive: boolean;
-  isSettingsLoaded?: boolean;
   colorMode: ColorModeWithSystem;
   resolvedColorMode: ColorMode;
 };
@@ -29,6 +31,7 @@ type SettingsStore = Settings & {
   debouncedSet: (name: string, value: any) => void;
   load: () => void;
   save: () => void;
+  reset: () => void;
   T: typeof EN;
 };
 
@@ -56,16 +59,15 @@ const loadSettings = () => {
 
   console.log('⚙️ Load', mergedSettings);
   return {
-    isSettingsLoaded: true,
     ...mergedSettings,
-    T: mergedSettings.language === 'zh' ? ZH : EN,
+    T: resolveLanguage(mergedSettings.language),
   };
 };
 
 export const useSettings = create<SettingsStore>()((set, get) => ({
   ...loadSettings(),
   setChatgptURL: (url) => set({ chatgptURL: url }),
-  setLanguage: (language) => set({ language, T: language === 'zh' ? ZH : EN }),
+  setLanguage: (language) => set({ language, T: resolveLanguage(language) }),
   setKeepAlive: (keepAlive) => set({ keepAlive }),
   setColorMode: (colorMode) =>
     set({
@@ -97,4 +99,11 @@ export const useSettings = create<SettingsStore>()((set, get) => ({
     utools.dbStorage.setItem('settings', mergedSettings);
   },
   load: () => set(loadSettings()),
+  reset: () => {
+    set({
+      ...DEFAULT_SETTINGS,
+      T: ZH,
+    });
+    utools.dbStorage.removeItem('settings');
+  },
 }));

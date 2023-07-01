@@ -88,6 +88,8 @@ export const EN = {
   shortcut: 'Shortcut',
   shortcuts: 'Shortcuts',
   command: 'Command',
+
+  reset: 'Reset',
 };
 
 export const ZH = {
@@ -124,7 +126,7 @@ export const ZH = {
   unpin: '取消置顶',
   pinned: '已置顶',
   unpinned: '已取消置顶',
-  toggle: '切换',   
+  toggle: '切换',
   close: '关闭',
   exceedingTokenLimit: '超过 token 限制：',
   clearSelection: '清除选择',
@@ -183,6 +185,7 @@ export const ZH = {
   zoomOut: '缩小',
   zoomReset: '重置缩放',
 
+  reset: '重置',
 };
 
 export const T = 'utools' in window ? ZH : EN;

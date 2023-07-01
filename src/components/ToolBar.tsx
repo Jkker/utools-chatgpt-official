@@ -5,7 +5,7 @@ import {
   IconButtonProps,
   Tooltip,
 } from '@chakra-ui/react';
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import {
   MdDarkMode,
   MdDeveloperMode,
@@ -31,23 +31,6 @@ const Button = ({
     hasArrow
     label={
       <Box>{(label || children) + (shortcut ? ` (⌘ ${shortcut})` : '')}</Box>
-      /*  <Flex justifyContent="center" alignItems="center" gap={2}>
-        <Box>{label || children}</Box>
-        {shortcut && (
-          <Flex
-            px={0.5}
-            rounded="md"
-            bg="whiteAlpha.400"
-            _dark={{
-              bg: 'blackAlpha.300',
-            }}
-            fontFamily="mono"
-            display="inline-block"
-          >
-            ⌘ + {shortcut}
-          </Flex>
-        )}
-      </Flex> */
     }
   >
     <IconButton
@@ -67,6 +50,8 @@ const Button = ({
   </Tooltip>
 );
 
+const isDev = utools.isDev();
+
 const ToolBar: FC<{
   actions: {
     [key: string]: (...args: any) => void;
@@ -76,7 +61,6 @@ const ToolBar: FC<{
   openSettings: () => void;
   openEditor: () => void;
 }> = ({ actions, isPinned, children, openSettings, openEditor }) => {
-  const isDev = useRef(utools.isDev());
   const { T, resolvedColorMode, toggleColorMode } = useSettings();
 
   return (

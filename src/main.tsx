@@ -38,7 +38,7 @@ const themeConfig: ThemeOverride = {
   },
   config: {
     initialColorMode: 'system',
-    useSystemColorMode: true,
+    useSystemColorMode: false,
   },
 };
 

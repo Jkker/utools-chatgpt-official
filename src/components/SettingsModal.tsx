@@ -1,4 +1,5 @@
 import {
+  Button,
   ColorModeWithSystem,
   Container,
   FormControl,
@@ -33,7 +34,6 @@ const PreferencesForm = () => {
     <Container
       display="flex"
       flexDirection="column"
-      alignItems="center"
       maxW="container.sm"
       gap={4}
     >
@@ -71,10 +71,9 @@ const PreferencesForm = () => {
           required={true}
           defaultValue={settings.chatgptURL}
           onBlur={(e) => settings.setChatgptURL(e.target.value)}
-          // value={settings.chatgptURL}
-          // onChange={(e) => settings.setChatgptURL(e.target.value)}
         />
       </FormControl>
+      <Button onClick={settings.reset}>{T.reset}</Button>
     </Container>
   );
 };
