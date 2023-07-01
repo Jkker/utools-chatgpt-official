@@ -31,7 +31,9 @@ const windowOptions = {
 const createWindow = (queuedInput = '') => {
   if (win && !win.isDestroyed()) {
     try {
-      return win.show();
+      win.show();
+      ipcRenderer.sendTo(win?.webContents?.id, 'insert-prompt', queuedInput);
+      return;
     } catch (e) {
       log('❌ Cannot show window: ' + e);
     }
@@ -41,8 +43,9 @@ const createWindow = (queuedInput = '') => {
   win = utools.createBrowserWindow('./index.html', windowOptions, () => {
     win.focus();
     if (utools.isDev()) win.webContents.openDevTools();
-    ipcRenderer.sendTo(win?.webContents?.id, 'init', queuedInput);
   });
+
+  ipcRenderer.sendTo(win?.webContents?.id, 'init', queuedInput);
 
   // change window title to match page title
 };

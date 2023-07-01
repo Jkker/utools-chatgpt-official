@@ -7,11 +7,11 @@ let queuedInput = '';
 ipcRenderer.on('init', (event, input) => {
   parentId = event.senderId;
   queuedInput = input;
-  console.log('init', { parentId });
+  console.log('init', { parentId, input });
 });
 
 const main = () => {
-  const API = {
+  window.API = {
     isPinned: false,
     pin() {
       ipcRenderer.sendTo(parentId, 'pin');
@@ -24,11 +24,8 @@ const main = () => {
       return this.isPinned;
     },
     togglePin() {
-      if (this.isPinned) {
-        return this.unpin();
-      } else {
-        return this.pin();
-      }
+      if (this.isPinned) this.unpin();
+      else this.pin();
     },
     getQueuedInput: () => {
       const i = queuedInput;
@@ -41,10 +38,10 @@ const main = () => {
     updatePageTitle: debounce((title) => {
       ipcRenderer.sendTo(parentId, 'update-page-title', title);
     }, 200),
-  };
-  window.API = API;
 
-  // webview.addEventListener('did-navigate', onload);
+    onPromptInsert: (callback) =>
+      ipcRenderer.on('insert-prompt', (event, input) => callback(input)),
+  };
 };
 
 document.addEventListener('DOMContentLoaded', () => {

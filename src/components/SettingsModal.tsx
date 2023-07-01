@@ -1,11 +1,7 @@
-import { useCallback } from 'react';
-
 import {
-  Checkbox,
-  ColorMode,
+  ColorModeWithSystem,
   Container,
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -21,16 +17,16 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  useColorMode,
 } from '@chakra-ui/react';
+import { useCallback } from 'react';
 import { MdSettings } from 'react-icons/md';
-
-import { settingsFormData, useSettings } from '../hooks/useSettings';
+import { CHAT_GPT_URL } from '../constants';
+import { useSettings } from '../hooks/useSettings';
 import KeyboardShortcutTable from './KeyboardShortcutTable';
 import SnippetManager from './SnippetManager';
-const PreferencesForm = ({ actions }) => {
+
+const PreferencesForm = () => {
   const settings = useSettings();
-  const { colorMode } = useColorMode();
   const { T, language } = settings;
 
   return (
@@ -43,10 +39,9 @@ const PreferencesForm = ({ actions }) => {
     >
       <FormControl>
         <FormLabel>{T.theme}</FormLabel>
-
         <RadioGroup
-          value={colorMode}
-          onChange={(v) => actions.setColorMode(v as ColorMode)}
+          value={settings.colorMode}
+          onChange={(v) => settings.setColorMode(v as ColorModeWithSystem)}
         >
           <Stack direction="row" spacing={4}>
             <Radio value="light">{T.light}</Radio>
@@ -57,7 +52,6 @@ const PreferencesForm = ({ actions }) => {
       </FormControl>
       <FormControl>
         <FormLabel>{T.language}</FormLabel>
-
         <RadioGroup
           value={language}
           onChange={(v) => settings.setLanguage(v as typeof language)}
@@ -68,60 +62,24 @@ const PreferencesForm = ({ actions }) => {
           </Stack>
         </RadioGroup>
       </FormControl>
-
-      {(settingsFormData as any).map(
-        ({
-          label,
-          description,
-          type,
-          name,
-          placeholder,
-          options,
-          required,
-        }) => (
-          <FormControl key={label}>
-            <FormLabel>{label}</FormLabel>
-            {type === 'radio' ? (
-              <RadioGroup
-                value={settings[name]}
-                onChange={(v) => settings.set(name, v)}
-              >
-                <Stack direction="row" spacing={4}>
-                  {options.map((option) => (
-                    <Radio key={option.label} value={option.value}>
-                      {option.label}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-            ) : type === 'checkbox' ? (
-              <Checkbox
-                name={name}
-                defaultChecked={settings[name]}
-                onChange={(e) => settings.set(name, e.target.checked)}
-              >
-                {label}
-              </Checkbox>
-            ) : (
-              <Input
-                type={type}
-                name={name}
-                placeholder={placeholder}
-                required={required}
-                defaultValue={settings[name]}
-                onChange={(e) => settings.set(name, e.target.value)}
-              />
-            )}
-
-            {description && <FormHelperText>{description}</FormHelperText>}
-          </FormControl>
-        )
-      )}
+      <FormControl>
+        <FormLabel>{T.chatgptURL}</FormLabel>
+        <Input
+          type="url"
+          name="chatgptURL"
+          placeholder={CHAT_GPT_URL}
+          required={true}
+          defaultValue={settings.chatgptURL}
+          onBlur={(e) => settings.setChatgptURL(e.target.value)}
+          // value={settings.chatgptURL}
+          // onChange={(e) => settings.setChatgptURL(e.target.value)}
+        />
+      </FormControl>
     </Container>
   );
 };
 
-function SettingsModal({ isOpen, onClose, actions }) {
+function SettingsModal({ isOpen, onClose }) {
   const { save: saveSettings, T } = useSettings();
   const handleClose = useCallback(() => {
     saveSettings();
@@ -163,7 +121,7 @@ function SettingsModal({ isOpen, onClose, actions }) {
           </TabList>
           <TabPanels h="70vh" overflow="auto">
             <TabPanel>
-              <PreferencesForm actions={actions} />
+              <PreferencesForm />
             </TabPanel>
             <TabPanel>
               <SnippetManager />
@@ -181,7 +139,7 @@ function SettingsModal({ isOpen, onClose, actions }) {
 export const DevSettingsModal = () => {
   return (
     <>
-      <SettingsModal isOpen={true} onClose={() => void {}} actions={{}} />
+      <SettingsModal isOpen={true} onClose={() => void {}} />
     </>
   );
 };

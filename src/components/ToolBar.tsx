@@ -1,6 +1,5 @@
 import {
   Box,
-  ColorMode,
   Flex,
   IconButton,
   IconButtonProps,
@@ -76,10 +75,9 @@ const ToolBar: FC<{
   children?: React.ReactNode;
   openSettings: () => void;
   openEditor: () => void;
-  colorMode: ColorMode;
-}> = ({ actions, isPinned, children, openSettings, colorMode, openEditor }) => {
+}> = ({ actions, isPinned, children, openSettings, openEditor }) => {
   const isDev = useRef(utools.isDev());
-  const { T } = useSettings();
+  const { T, resolvedColorMode, toggleColorMode } = useSettings();
 
   return (
     <Flex
@@ -106,9 +104,9 @@ const ToolBar: FC<{
     >
       {children}
       <Button
-        icon={colorMode === 'light' ? <MdDarkMode /> : <MdLightMode />}
-        onClick={actions.toggleColorMode}
-        label={colorMode === 'light' ? T.dark : T.light}
+        icon={resolvedColorMode === 'light' ? <MdDarkMode /> : <MdLightMode />}
+        onClick={toggleColorMode}
+        label={resolvedColorMode === 'light' ? T.dark : T.light}
         shortcut="L"
       />
       <Button

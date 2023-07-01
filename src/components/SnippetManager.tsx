@@ -25,8 +25,8 @@ import {
 } from '@chakra-ui/react';
 import { MdClose, MdCopyAll, MdDelete, MdEdit, MdSave } from 'react-icons/md';
 import TextareaAutosize from 'react-textarea-autosize';
-import useSnippet, { Snippet } from '../hooks/useSnippet';
 import { useSettings } from '../hooks/useSettings';
+import useSnippet, { Snippet } from '../hooks/useSnippet';
 
 const inputStyles = {
   bg: 'gray.50',
@@ -330,12 +330,7 @@ const NewSnippetCard: FC = () => {
   );
 };
 const SnippetManager = () => {
-  const { snippets, load } = useSnippet();
-
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { snippets } = useSnippet();
 
   return (
     <Flex

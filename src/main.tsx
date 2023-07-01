@@ -1,13 +1,31 @@
-import { ChakraProvider, extendTheme, ThemeOverride } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  ChakraProviderProps,
+  ColorMode,
+  ColorModeWithSystem,
+  ThemeOverride,
+  extendTheme,
+} from '@chakra-ui/react';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { CHATGPT_GRAY } from './constants';
 import App from './ChatGPT';
-// import App from './Dev';
-// import App from './components/Editor';
-// import App from './components/PromptManager';
-// import App from './components/SnippetManager';
-// import { DevSettingsModal as App } from './components/SettingsModal';
+import { CHATGPT_GRAY } from './constants';
+
+const key = 'colorMode';
+
+const uToolsColorManger: ChakraProviderProps['colorModeManager'] = {
+  get: (init: ColorMode) => {
+    const color = utools.dbStorage.getItem(key) ?? init;
+    console.log('getColorMode', color);
+    return color;
+  },
+  set: (value: ColorModeWithSystem) => {
+    console.log('setColorMode', value);
+    utools.dbStorage.setItem(key, value);
+  },
+  type: 'localStorage',
+};
 
 const themeConfig: ThemeOverride = {
   colors: {
@@ -28,7 +46,7 @@ const theme = extendTheme(themeConfig);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme} colorModeManager={uToolsColorManger}>
       <App />
     </ChakraProvider>
   </React.StrictMode>

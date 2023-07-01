@@ -10,5 +10,6 @@ interface Window {
     getQueuedInput: () => string;
     toggleWindowDevTools: () => void;
     updatePageTitle: (title: string) => void;
+    onPromptInsert: (callback: (text: string) => void) => void;
   };
 }

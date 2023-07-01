@@ -1,11 +1,10 @@
 import {
-  ColorModeWithSystem,
+  ColorMode,
   useColorMode,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import type { ContextMenuEvent } from 'electron';
-import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ContextMenu, {
   ExtendedContextMenuParams as CtxParams,
@@ -33,7 +32,8 @@ function App() {
   const [webviewInitialized, setWebviewInitialized] = useState(false);
   const [ctxParams, setCtxParams] = useState<CtxParams>({} as CtxParams);
   const [isPinned, setIsPinned] = useState(window.API?.isPinned ?? false);
-  const { setColorMode, colorMode } = useColorMode();
+  const { colorMode: chakraColorMode, setColorMode: setChakraColorMode } =
+    useColorMode();
   const {
     isOpen: isPreferencesOpen,
     onOpen: openPreferences,
@@ -69,11 +69,11 @@ function App() {
         .join('')
     );
   };
-  const exec = (code) => webviewRef.current?.executeJavaScript(code);
+  const exec = (code) =>
+    webviewRef.current?.executeJavaScript(`(()=>{${code}})();`);
 
-  const appActions = useMemo(
+  const windowActions = useMemo(
     () => ({
-      //* Window Actions */
       openEditor,
       toggleEditor,
       closeEditor,
@@ -96,8 +96,13 @@ function App() {
         return isPinned;
       },
       toggleWindowDevTools: () => window.API.toggleWindowDevTools(),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
-      //* Webview Actions */
+  const webviewActions = useMemo(
+    () => ({
       focus: () => webviewRef.current?.focus(),
       copy: () => webviewRef.current?.copy(),
       paste: () => webviewRef.current?.paste(),
@@ -124,27 +129,33 @@ function App() {
       toggleGPTModel: () => interact(SELECTORS.toggleGPTModel),
       toggleSidebar: () => interact(SELECTORS.toggleSidebar),
       focusPromptTextarea: () => {
-        appActions.focus();
+        webviewActions.focus();
         interact(SELECTORS.promptTextarea, 'focus()');
       },
       blurPromptTextarea: () => interact(SELECTORS.promptTextarea, 'blur()'),
       getPromptText: () =>
-        exec(`document.querySelector(${SELECTORS.promptTextarea})?.value`),
-      setPromptText: (text) => {
+        exec(
+          `return document.querySelector(${SELECTORS.promptTextarea})?.value`
+        ),
+      setPromptText: async (text) => {
+        webviewRef.current.focus();
+        await exec(
+          `const e = document.querySelector(${SELECTORS.promptTextarea}); e.value = ""; e.focus()`
+        );
+        await webviewRef.current.insertText(text);
+        // const encoded = new TextEncoder().encode(text).join(',');
+        // interact(
+        //   SELECTORS.promptTextarea,
+        //   `value = (new TextDecoder().decode(new Uint8Array('${encoded}'.split(',').map((n) => parseInt(n))).buffer))`
+        // );
+      },
+      /* setPromptText: (text) => {
         const encoded = new TextEncoder().encode(text).join(',');
         interact(
           SELECTORS.promptTextarea,
           `value = (new TextDecoder().decode(new Uint8Array('${encoded}'.split(',').map((n) => parseInt(n))).buffer))`
         );
-      },
-      // interact(SELECTORS.promptTextarea, `value = atob(\`${btoa(text)}\`)`)},
-      debouncedSetPromptText: debounce(async (text) => {
-        webviewRef.current?.focus();
-        await webviewRef.current?.executeJavaScript(
-          `(()=>{const t = document.querySelector(${SELECTORS.promptTextarea}); t.value = "";t.focus();})();`
-        );
-        webviewRef.current?.insertText(text);
-      }, 500),
+      }, */
       newChat: () => interact(SELECTORS.newChat),
       nextChat: () =>
         exec(
@@ -154,13 +165,15 @@ function App() {
         exec(
           `(document.querySelector(${SELECTORS.activeChat})?.parentNode?.previousSibling?.firstChild ?? document.querySelector(${SELECTORS.firstChat}))?.click()`
         ),
-      isGPT4: () => webviewRef.current.getURL().includes('gpt-4'),
+      isGPT4: () =>
+        webviewInitialized && webviewRef.current.getURL().includes('gpt-4'),
       getTokenLimit: () =>
-        appActions.isGPT4() ? GPT4_MAX_TOKENS : GPT3_5_MAX_TOKENS,
+        webviewActions.isGPT4() ? GPT4_MAX_TOKENS : GPT3_5_MAX_TOKENS,
       updateTokenCount: async (prompt?: string) => {
-        if (prompt === undefined) prompt = await appActions.getPromptText();
+        if (!webviewInitialized) return;
+        if (prompt === undefined) prompt = await webviewActions.getPromptText();
         const tokenCount = prompt.trim() ? getTokenCount(prompt) : 0;
-        const tokenLimit = appActions.getTokenLimit();
+        const tokenLimit = webviewActions.getTokenLimit();
         const tokenCountDesc =
           `Tokens: ${tokenCount} / ${tokenLimit}` +
           (tokenCount > tokenLimit ? ' ⚠️' : '');
@@ -179,44 +192,23 @@ function App() {
           SELECTORS.saveEditSubmitButton,
           SELECTORS.submitPromptButton,
         ]),
-      getColorMode: () => exec(`localStorage.getItem('theme')`),
-      setColorMode: async (mode: ColorModeWithSystem) => {
-        if (mode === 'system') {
-          mode = utools.isDarkColors() ? 'dark' : 'light';
-        }
-
-        await exec(
+      setColorMode: (mode: ColorMode) =>
+        exec(
           `localStorage.setItem('theme', '${mode}');document.documentElement.className = '${mode}';document.documentElement.style.setProperty('color-scheme', '${mode}');`
-        );
-        setColorMode(mode);
-      },
-      // toggleColorMode: async () => {
-      //   const mode = colorMode === 'dark' ? 'light' : 'dark';
-      //   await exec(
-      //     `localStorage.setItem('theme', '${mode}');document.documentElement.className = '${mode}';document.documentElement.style.setProperty('color-scheme', '${mode}');`
-      //   );
-      //   setColorMode(mode);
-      // },
+        ),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [webviewInitialized, isEditorOpen]
   );
-  const toggleColorMode = async () => {
-    const mode = colorMode === 'dark' ? 'light' : 'dark';
-    await exec(
-      `localStorage.setItem('theme', '${mode}');document.documentElement.className = '${mode}';document.documentElement.style.setProperty('color-scheme', '${mode}');`
-    );
-    setColorMode(mode);
-  };
 
   const actions = {
-    ...appActions,
-    toggleColorMode,
+    ...webviewActions,
+    ...windowActions,
   };
 
   useEffect(() => {
     if (webviewInitialized && !isEditorOpen) {
-      appActions.focusPromptTextarea();
+      webviewActions.focusPromptTextarea();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditorOpen, webviewInitialized]);
@@ -228,14 +220,33 @@ function App() {
     ])
   );
 
+  // * Color Mode Sync
   useEffect(() => {
+    if (webviewInitialized) {
+      setChakraColorMode(settings.resolvedColorMode);
+      webviewActions.setColorMode(settings.resolvedColorMode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.colorMode, webviewInitialized]);
+
+  // update colormode if chakra color mode changes (e.g. from system)
+  useEffect(() => {
+    if (webviewInitialized && chakraColorMode !== settings.resolvedColorMode) {
+      webviewActions.setColorMode(chakraColorMode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chakraColorMode, settings.resolvedColorMode]);
+
+  // * Init
+  useEffect(() => {
+    // settings.load();
     if (webviewRef.current) {
+      window.API.onPromptInsert(webviewActions.setPromptText);
+
       const webview = webviewRef.current;
       const onload = async () => {
         console.log('✅ Webview loaded');
         setWebviewInitialized(true);
-        const webViewColorMode = await appActions.getColorMode();
-        setColorMode(webViewColorMode);
         await exec(
           contentScript
             .replace(`'KEYBOARD_SHORTCUTS'`, JSON.stringify(KEYBOARD_SHORTCUTS))
@@ -245,8 +256,8 @@ function App() {
         // await webview.insertCSS(cleanupCSS);
         const queuedInput = window.API.getQueuedInput();
         if (queuedInput && queuedInput.trim()) {
-          await appActions.focusPromptTextarea();
-          await appActions.insertText(queuedInput);
+          await webviewActions.focusPromptTextarea();
+          await webviewActions.insertText(queuedInput);
         }
       };
 
@@ -281,15 +292,11 @@ function App() {
         e.preventDefault();
         utools.shellOpenExternal(e.url);
       });
-      // webview.addEventListener('load-commit', (e) => {
-      //   console.log('🖥️ load-commit', e);
-      // });
+
       webview.addEventListener('did-navigate-in-page', () => {
-        // console.log('🖥️ did-navigate-in-page', e);
         onload();
       });
       webview.addEventListener('page-title-updated', (e) => {
-        // console.log('🖥️ page-title-updated', e.title);
         window.API.updatePageTitle(e.title);
       });
     }
@@ -318,7 +325,6 @@ function App() {
           <ToolBar
             actions={actions}
             isPinned={isPinned}
-            colorMode={colorMode}
             openSettings={openPreferences}
             openEditor={openEditor}
           >
@@ -327,7 +333,6 @@ function App() {
           <SettingsModal
             isOpen={isPreferencesOpen}
             onClose={closePreferences}
-            actions={actions}
           />
           <PromptEditor
             isOpen={isEditorOpen}

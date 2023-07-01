@@ -138,17 +138,18 @@ interface SnippetStore {
   delete: (snippet: Snippet) => void;
 }
 
+const loadSnippets = () => {
+  if (!('utools' in window)) {
+    return defaultSnippets;
+  }
+  const snippets = utools.dbStorage.getItem('snippets') ?? defaultSnippets;
+  console.log(`🚀 ~ file: useSnippet.ts:121 ~ useSnippet ~ load:`, snippets);
+  return snippets;
+};
+
 const useSnippet = create<SnippetStore>((set, get) => ({
-  snippets: [],
-  load: () => {
-    if (!('utools' in window)) {
-      set(() => ({ snippets: defaultSnippets }));
-      return;
-    }
-    const snippets = utools.dbStorage.getItem('snippets') ?? defaultSnippets;
-    console.log(`🚀 ~ file: useSnippet.ts:121 ~ useSnippet ~ load:`, snippets);
-    set(() => ({ snippets }));
-  },
+  snippets: loadSnippets(),
+  load: () => set({ snippets: loadSnippets() }),
   save: () => {
     const { snippets } = get();
     if (!('utools' in window)) return;

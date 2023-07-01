@@ -124,7 +124,7 @@ export const ZH = {
   unpin: '取消置顶',
   pinned: '已置顶',
   unpinned: '已取消置顶',
-  toggle: '切换',
+  toggle: '切换',   
   close: '关闭',
   exceedingTokenLimit: '超过 token 限制：',
   clearSelection: '清除选择',

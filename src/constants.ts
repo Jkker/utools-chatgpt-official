@@ -19,6 +19,7 @@ export const SELECTORS = {
 };
 
 export const KEYBOARD_SHORTCUTS = {
+  F5: 'reload',
   'CmdOrCtrl + R': 'reload',
   'CmdOrCtrl + Shift + R': 'reloadIgnoringCache',
   'CmdOrCtrl + Shift + I': 'openDevTools',

@@ -8,7 +8,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import type { CompletionSource, Completion } from '@codemirror/autocomplete';
+import type { Completion, CompletionSource } from '@codemirror/autocomplete';
 import { autocompletion, snippet } from '@codemirror/autocomplete';
 import { markdown } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -107,7 +107,6 @@ export function PromptEditor({
       if (snippetStore.snippets.length === 0) snippetStore.load();
     } else if (value) {
       actions.setPromptText(value.trim());
-      actions.focusPromptTextarea();
     }
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
