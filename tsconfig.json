@@ -25,7 +25,15 @@
     "types": [
       "utools-api-types",
       "@types/node",
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@app/*": [
+        "./app/*"
+      ],
+    }
   },
   "include": [
     "src",

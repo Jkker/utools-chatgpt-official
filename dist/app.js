@@ -17,7 +17,7 @@ const windowOptions = {
   frame: true,
   show: true,
   webPreferences: {
-    preload: './preload.js',
+    preload: './p1.js',
     devTools: true,
     webviewTag: true,
     contextIsolation: false,
@@ -38,7 +38,8 @@ const createWindow = (queuedInput = '') => {
   }
 
   /** @type {Electron.BrowserWindow} */
-  win = utools.createBrowserWindow('./index.html', windowOptions, () => {
+  // win = utools.createBrowserWindow('./index.html', windowOptions, () => {
+  win = utools.createBrowserWindow('./idx.html', windowOptions, () => {
     win.focus();
     if (utools.isDev()) win.webContents.openDevTools();
     ipcRenderer.sendTo(win?.webContents?.id, 'init', queuedInput);

@@ -1,15 +1,17 @@
-
 export const CHAT_GPT_URL = 'https://chat.openai.com';
-export const GPT4_MAX_TOKENS = 4000; // 4096 is the max
-export const GPT3_5_MAX_TOKENS = 8000; // 8192 is the max
+export const GPT4_MAX_TOKENS = 32767; // gpt-4
+export const GPT3_5_MAX_TOKENS = 8191; // text-davinci-002-render-sha
 
 export const SELECTORS = {
-  newChat: `'[aria-label="Chat history"] a'`,
-  firstChat: `'[aria-label="Chat history"] ol a'`,
-  activeChat: `'[aria-label="Chat history"] ol a.bg-gray-800'`,
+  currentModel: `'[role="presentation"] [aria-haspopup="menu"]'`,
+  newChat: [
+    `button[class="text-token-text-primary"]`, // pc
+    `'[aria-haspopup="menu"] ~ div > button'`, // mobile
+  ],
+  firstChat: `'ol > li a'`,
+  activeChat: `'a.bg-token-surface-primary'`,
   promptTextarea: `'#prompt-textarea'`,
-  toggleSidebar: `'span[data-state="closed"] > a'`,
-  toggleGPTModel: `'[class*="group/button"].border-transparent'`,
+  toggleSidebar: `'main div button'`,
   gptReleaseNotes: `'form ~ div'`,
   saveEditSubmitButton: `'textarea ~ div > button[class="btn relative btn-primary mr-2"]'`,
   cancelEditButton: `'textarea ~ div > button[class="btn relative btn-neutral"]'`,
@@ -19,28 +21,26 @@ export const SELECTORS = {
 };
 
 export const KEYBOARD_SHORTCUTS = {
-  'CmdOrCtrl + R': 'reload',
-  'CmdOrCtrl + Shift + R': 'reloadIgnoringCache',
-  'CmdOrCtrl + Shift + I': 'openDevTools',
-  'CmdOrCtrl + I': 'toggleWindowDevTools',
-  'CmdOrCtrl + Z': 'undo',
-  'CmdOrCtrl + =': 'zoomIn',
-  'CmdOrCtrl + -': 'zoomOut',
-  'CmdOrCtrl + 0': 'zoomReset',
-  'CmdOrCtrl + /': 'toggleSidebar',
-  'CmdOrCtrl + .': 'focusPromptTextarea',
-  'CmdOrCtrl + N': 'newChat',
-  'CmdOrCtrl + [': 'prevChat',
-  'CmdOrCtrl + Shift + Tab': 'prevChat',
-  'CmdOrCtrl + ]': 'nextChat',
-  'CmdOrCtrl + Tab': 'nextChat',
-  'CmdOrCtrl + Enter': 'submitAll',
-  'CmdOrCtrl + M': 'toggleGPTModel',
-  // 'CmdOrCtrl + L': 'toggleColorMode',
-  'CmdOrCtrl + T': 'togglePin',
-  'CmdOrCtrl + P': 'togglePreferences',
-  'CmdOrCtrl + E': 'openEditor',
-  'Alt + Enter': 'openEditor',
+  'mod+R': 'reload',
+  'mod+shift+R': 'reloadIgnoringCache',
+  'mod+shift+I': 'openDevTools',
+  'mod+I': 'toggleWindowDevTools',
+  'mod+Z': 'undo',
+  'mod+=': 'zoomIn',
+  'mod+-': 'zoomOut',
+  'mod+0': 'zoomReset',
+  'mod+/': 'toggleSidebar',
+  'mod+.': 'focusPromptTextarea',
+  'mod+N': 'newChat',
+  'mod+[': 'prevChat',
+  'mod+shift+Tab': 'prevChat',
+  'mod+]': 'nextChat',
+  'mod+Tab': 'nextChat',
+  'mod+Enter': 'submitAll',
+  'mod+T': 'togglePin',
+  'mod+P': 'togglePreferences',
+  'mod+E': 'openEditor',
+  'alt+Enter': 'openEditor',
   Esc: 'closeEditor',
 };
 

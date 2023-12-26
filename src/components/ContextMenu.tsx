@@ -27,9 +27,11 @@ import {
   MdUndo,
   MdWarningAmber,
 } from 'react-icons/md';
+import { toNativeShortcut } from '@/utils/keyboardShortcut';
+import { getTokenCount } from '@/utils/tokenCount';
+import { useSettings } from '@/hooks/useSettings';
 
-import { getTokenCount } from '../utils/tokenCount';
-import { useSettings } from '../hooks/useSettings';
+import { builtInContentActions } from '@/config/hotkeys';
 
 export interface ExtendedContextMenuParams extends Electron.ContextMenuParams {
   windowHeight?: number;
@@ -74,6 +76,22 @@ const calculateContextMenuPosition = ({
   return style;
 };
 
+
+const CustomContextMenuItem = ({
+  command,
+  label,
+  onClick,
+  children,
+  icon,
+  ...props
+}) => (
+  <ContextMenuItem
+    label={builtInContentActions[command].name}
+    icon={MdContentCopy}
+    onClick={actions.copy}
+    command={toNativeShortcut('mod+C')}
+  />
+);
 const ContextMenu: FC<ContextMenuProps> = ({
   params,
   isOpen,
@@ -117,10 +135,10 @@ const ContextMenu: FC<ContextMenuProps> = ({
   const editActions = [
     params?.editFlags?.canCopy && (
       <ContextMenuItem
-        label={T.copy}
+        label={builtInContentActions.copy.name}
         icon={MdContentCopy}
         onClick={actions.copy}
-        command="Ctrl+C"
+        command={toNativeShortcut('mod+C')}
       />
     ),
     params?.editFlags?.canPaste && (
@@ -128,7 +146,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
         label={T.paste}
         icon={MdContentPaste}
         onClick={actions.paste}
-        command="Ctrl+V"
+        command={toNativeShortcut('mod+V')}
       />
     ),
     params?.editFlags?.canCut && (
@@ -136,7 +154,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
         label={T.cut}
         icon={MdContentCut}
         onClick={actions.cut}
-        command="Ctrl+X"
+        command={toNativeShortcut('mod+X')}
       />
     ),
     // params?.editFlags?.canSelectAll && (
@@ -144,7 +162,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
     //     label={T.selectAll}
     //     icon={MdSelectAll}
     //     onClick={actions.selectAll}
-    //     command="Ctrl+A"
+    //     command={toNativeShortcut('mod+A')}
     //   />
     // ),
   ];
@@ -155,7 +173,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
         label={T.undo}
         icon={MdUndo}
         onClick={actions.undo}
-        command="Ctrl+Z"
+        command={toNativeShortcut('mod+Z')}
       />
     ),
     params?.editFlags?.canRedo && (
@@ -163,7 +181,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
         label={T.redo}
         icon={MdRedo}
         onClick={actions.redo}
-        command="Ctrl+Y"
+        command={toNativeShortcut('mod+Y')}
       />
     ),
   ];
@@ -254,7 +272,7 @@ const ContextMenu: FC<ContextMenuProps> = ({
               label={T.reload}
               icon={MdRefresh}
               onClick={actions.reload}
-              command="Ctrl+R"
+              command={toNativeShortcut('mod+R')}
             />
             {/* <ContextMenuItem
               label={T.settings}

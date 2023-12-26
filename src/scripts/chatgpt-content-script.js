@@ -19,6 +19,8 @@
         }, delay);
       };
     };
+
+
     sendCommand('updateTokenCount', '');
     const addTokenCountListener = () => {
       const t = document.getElementById('prompt-textarea');
@@ -27,7 +29,7 @@
       console.log('🚀 addTokenCountListener');
       t.dataset.tokenCountListener = true;
 
-      $('form ~ div').replaceChildren('Tokens: 0 / 8000');
+      $('form ~ div')?.replaceChildren('Tokens: 0 / ?');
 
       const update = debounce(
         (e) => sendCommand('updateTokenCount', e.target.value),
@@ -46,10 +48,10 @@
       }
     );
 
-    $('div[class="h-32 md:h-48 flex-shrink-0"]').addEventListener(
-      'dblclick',
-      () => sendCommand('')
-    );
+    // $('div[class="h-32 md:h-48 flex-shrink-0"]').addEventListener(
+    //   'dblclick',
+    //   () => sendCommand('')
+    // );
 
     const decomposeShortcut = (key) => {
       const CmdOrCtrl = isMacOS ? 'Meta' : 'Ctrl';

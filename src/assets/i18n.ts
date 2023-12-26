@@ -24,7 +24,6 @@ export const EN = {
   prevChat: 'Previous Chat',
   nextChat: 'Next Chat',
   submitAll: 'Submit',
-  toggleGPTModel: 'Toggle GPT Model',
   togglePin: 'Toggle Pin',
   togglePreferences: 'Toggle Preferences',
   openInBrowser: 'Open in Browser',
@@ -88,6 +87,12 @@ export const EN = {
   shortcut: 'Shortcut',
   shortcuts: 'Shortcuts',
   command: 'Command',
+
+  zoomIn: 'Zoom In',
+  zoomOut: 'Zoom Out',
+  zoomReset: 'Zoom Reset',
+
+  internet: 'Internet',
 };
 
 export const ZH = {
@@ -115,7 +120,6 @@ export const ZH = {
   prevChat: '上一个对话',
   nextChat: '下一个对话',
   submitAll: '提交',
-  toggleGPTModel: '切换 GPT 模型',
   togglePin: '置顶/取消置顶',
   togglePreferences: '打开/关闭偏好设置',
   openInBrowser: '在浏览器中打开',
@@ -183,6 +187,7 @@ export const ZH = {
   zoomOut: '缩小',
   zoomReset: '重置缩放',
 
-};
+  internet: '网络环境',
+} satisfies typeof EN;
 
 export const T = 'utools' in window ? ZH : EN;

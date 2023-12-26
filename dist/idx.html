@@ -1,0 +1,27 @@
+<!-- <h1>Webview Demo</h1>
+<webview
+  id="chatgpt"
+  src="https://example.com"
+  autoFocus
+  nodeintegration
+  allowpopups
+  webpreferences="contextIsolation=false, allowRunningInsecureContent=true, webSecurity=false, nativeWindowOpen=true, nodeIntegration=true, nodeIntegrationInWorker=true, nodeIntegrationInSubFrames=true, webviewTag=true, enableRemoteModule=true, preload=./p1.js"
+  preload="./p1.js"
+  plugins
+  disablewebsecurity
+></webview>
+<script>
+  const webview = document.getElementById('chatgpt');
+  webview.addEventListener('dom-ready', () => {
+    webview.openDevTools();
+  });
+  // add event listener for window message
+  window.addEventListener('message', (event) => {
+    console.log('message received from webview', event.data);
+  });
+</script> -->
+
+<!-- redirect to https://chat.openai.com/#.html -->
+<script>
+  window.location.href = 'https://chat.openai.com';
+</script>

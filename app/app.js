@@ -1,7 +1,6 @@
 const log = require('./logger')(__filename);
 const { ipcRenderer } = require('electron');
 
-/** @type {Electron.BrowserWindow} */
 let win = null;
 
 // const send = (event, ...arg) => {
